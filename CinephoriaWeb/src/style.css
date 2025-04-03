@@ -1,6 +1,3 @@
-/* Import Bootstrap CSS */
-@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
-
 /* ---------------------- */
 /* 1. Global Styles       */
 /* ---------------------- */
@@ -14,6 +11,8 @@ body {
   flex-direction: column;
   font-family: 'Roboto', sans-serif;
 }
+
+
 
 /* ---------------------- */
 /* 2. Layout & Containers */
@@ -36,6 +35,9 @@ main {
 /* 3. Couleurs Personnalisées */
 /* ---------------------- */
 .custom-bg-primary {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   background-color: #02385A;
 }
 
@@ -68,4 +70,31 @@ ul {
 ul li a {
   text-decoration: none;
   color: #000;
+}
+
+/* 5. Listes & Liens */
+/* Cibler les liens dans la section 'Nouveautés' */
+.section ul li a {
+  text-decoration: none;
+  color: white;
+}
+
+/* 6. Movies */
+.film-item {
+  list-style: none;
+  margin-right: 20px;
+  text-align: center;
+}
+
+.film-image {
+  width: 200px;
+  height: 260px;
+  border-radius: 8px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.custom-container {
+  padding-left: 150px;
+  padding-right: 150px;
 }
