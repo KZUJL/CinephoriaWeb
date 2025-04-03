@@ -8,10 +8,10 @@
                 <button class="btn custom-btn mx-2">Films</button>
             </router-link>
             <button class="btn custom-btn mx-2">Réservation</button>
-            <input type="text" class="form-control mx-2 mr-3" placeholder="Rmecherche...">
+            <input type="text" class="form-control mx-2 mr-3" placeholder="Recherche...">
         </div>
         <div class="d-flex align-items-center">
-            <button class="btn btn-warning text-white">Contactez-nous</button>
+            <button class="btn btn-warning">Contactez-nous</button>
             <button class="btn custom-btn mx-2 d-flex align-items-center">
                 <i class="bi bi-person-circle text-white" style="font-size: 1.8rem;" title="Connexion"></i>
             </button>
