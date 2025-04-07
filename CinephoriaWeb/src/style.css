@@ -12,8 +12,6 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
-
-
 /* ---------------------- */
 /* 2. Layout & Containers */
 /* ---------------------- */
@@ -72,14 +70,15 @@ ul li a {
   color: #000;
 }
 
-/* 5. Listes & Liens */
 /* Cibler les liens dans la section 'Nouveautés' */
 .section ul li a {
   text-decoration: none;
   color: white;
 }
 
+/* ---------------------- */
 /* 6. Movies */
+/* ---------------------- */
 .film-item {
   list-style: none;
   margin-right: 20px;
@@ -97,4 +96,62 @@ ul li a {
 .custom-container {
   padding-left: 150px;
   padding-right: 150px;
+}
+
+/* ---------------------- */
+/* 7. Footer Styles       */
+/* ---------------------- */
+
+.cinema-section {
+  margin-top: 20px;
+}
+
+.cinema-divider {
+  width: 50%;
+  margin: auto;
+  border: 1px solid #666;
+}
+
+.cinema-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.cinema-item {
+  width: 180px;
+  text-align: center;
+}
+
+/* Style pour le nom des cinémas */
+.cinema-name {
+  color: #f9f9f9;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.cinema-name:hover {
+  text-decoration: underline;
+}
+
+/* Détails avec animation */
+.cinema-details {
+  margin-top: 5px;
+  font-size: 0.9rem;
+  color: #bbb;
+  border-top: 1px solid #444;
+  padding-top: 5px;
+}
+
+/* Animation d'affichage */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
