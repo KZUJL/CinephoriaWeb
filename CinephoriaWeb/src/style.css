@@ -12,6 +12,16 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
+header {
+  border-bottom: 1px solid #d4af37;
+  /* doré chic */
+}
+
+footer {
+  border-top: 1px solid white;
+
+}
+
 /* ---------------------- */
 /* 2. Layout & Containers */
 /* ---------------------- */
@@ -39,6 +49,10 @@ main {
   background-color: #02385A;
 }
 
+.custom_main {
+  background-color: #024566;
+}
+
 .custom_sd_primary {
   background-color: #025273;
 }
@@ -54,6 +68,13 @@ main {
 
 .custom-btn:hover {
   background-color: #025273 !important;
+}
+
+.active-btn {
+  background-color: #025273 !important;
+  /* Changer la couleur pour l'état actif */
+  border-color: #02385A;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* ---------------------- */
@@ -91,6 +112,7 @@ ul li a {
   border-radius: 8px;
   display: block;
   margin-bottom: 8px;
+  cursor: pointer;
 }
 
 .custom-container {
@@ -107,9 +129,9 @@ ul li a {
 }
 
 .cinema-divider {
-  width: 50%;
+  width: 80%;
   margin: auto;
-  border: 1px solid #666;
+  border: 1px solid white;
 }
 
 .cinema-list {
@@ -154,4 +176,64 @@ ul li a {
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
+}
+
+.movie-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.movie-content {
+  display: flex;
+  gap: 20px;
+  /* Ajout d'espace entre le poster et les infos */
+}
+
+.movie-poster {
+  max-width: 250px;
+  flex-shrink: 0;
+  /* Empêche l'image de rétrécir */
+}
+
+.movie-info {
+  flex: 1;
+  /* Permet à la section d'infos de prendre tout l'espace restant */
+}
+
+.movie-info ul {
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.movie-info li {
+  margin: 5px 0;
+}
+
+.card {
+  cursor: pointer;
+}
+
+.seat {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 0.85rem;
+  border-radius: 6px;
+}
+
+.screen {
+  width: 50%;
+  height: 10px;
+  background-color: #999;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  line-height: 30px;
 }

@@ -9,7 +9,8 @@ import { RouterView } from 'vue-router';
     <header>
       <HeaderComponent />
     </header>
-    <main>
+
+    <main class="custom_main">
       <RouterView />
     </main>
 

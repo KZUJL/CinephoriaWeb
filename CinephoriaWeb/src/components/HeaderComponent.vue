@@ -2,13 +2,19 @@
     <div class="py-3 full-width px-4 d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
             <router-link to="/" title="Home">
-                <img :src="logoSrc" alt="Logo" class="logo mr-3">
+                <img :src="logoSrc" alt="Logo" class="logo mr-3" />
             </router-link>
             <router-link to="/movie">
-                <button class="btn custom-btn mx-2">Films</button>
+                <button class="btn custom-btn mx-2" :class="{ 'active-btn': isActiveRoute('/movie') }">
+                    Films
+                </button>
             </router-link>
-            <button class="btn custom-btn mx-2">Réservation</button>
-            <input type="text" class="form-control mx-2 mr-3" placeholder="Recherche...">
+            <router-link to="/reservation">
+                <button class="btn custom-btn mx-2" :class="{ 'active-btn': isActiveRoute('/reservation') }">
+                    Réservation
+                </button>
+            </router-link>
+            <input type="search" class="form-control mx-2 mr-3" placeholder="Recherche..." />
         </div>
         <div class="d-flex align-items-center">
             <button class="btn btn-warning">Contactez-nous</button>
@@ -19,15 +25,15 @@
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import logo from '../assets/CINEPHORIA.png';  // Assurez-vous que le chemin est correct
+<script setup lang="ts">
+import { useRoute } from 'vue-router'; // Importer useRoute pour accéder à la route actuelle
+import logo from '../assets/CINEPHORIA.png';
 
-export default defineComponent({
-    data() {
-        return {
-            logoSrc: logo as string,
-        };
-    },
-});
+const route = useRoute();
+const logoSrc = logo;
+
+const isActiveRoute = (routePath: string) => {
+    return route.path.startsWith(routePath);
+};
+
 </script>
