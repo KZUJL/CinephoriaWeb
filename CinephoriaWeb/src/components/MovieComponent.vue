@@ -1,49 +1,55 @@
 <template>
-    <div class="py-3  custom-container">
-        <!-- Section Nouveautés -->
+    <div class="py-3 custom-container">
+        <!-- Section Films -->
         <div class="section mb-4">
-            <h2>Films actuellement en salle</h2>
-            <ul class="d-flex flex-wrap">
-                <li v-for="film in movies" :key="film.movieId" class="film-item">
-                    <img :src="film.poster" :alt="film.title" class="film-image">
-                    <a href="#">{{ film.title }}</a>
-                </li>
-            </ul>
+            <h2 class="text-center text-white font-weight-bold mb-3">Films actuellement en salle</h2>
+            <hr class="cinema-divider mb-4" />
+
+            <div class="row">
+                <div class="col-12 col-lg-2 mb-4" v-for="film in movies" :key="film.movieId">
+                    <div class="card h-100 custom-card" @click="goToFilmDetail(film.movieId)">
+                        <img :src="film.poster" :alt="film.title" :title="film.title"
+                            style="object-fit: cover; height: 300px;">
+                        <div class="card-body text-start">
+                            <span class="font-weight-bold">{{ film.title }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import ApiCinephoria from '../services/apiCinephoria';
 import type { Film } from '../models/types';
 
+const router = useRouter();
+const movies = ref<Film[]>([]); // Déclarer un état réactif pour les films
 
-export default defineComponent({
-    data() {
-        return {
-            movies: [] as Film[],
-        };
-    },
-    methods: {
-        async fetchMovies() {
-            const api = new ApiCinephoria();
-            try {
-                const movies = await api.getMovies();
-                console.log('Données récupérées:', movies);
-                if (Array.isArray(movies)) {
-                    this.movies = movies;
-                } else {
-                    console.error('Erreur : la réponse de l\'API n\'est pas un tableau');
-                }
-            } catch (error) {
-                console.error('Erreur lors de la récupération des films:', error);
-            }
+// Fonction pour récupérer les films
+const fetchMovies = async () => {
+    const api = new ApiCinephoria();
+    try {
+        const moviesData = await api.getMovies();
+        console.log('Données récupérées:', moviesData);
+        if (Array.isArray(moviesData)) {
+            movies.value = moviesData;
+        } else {
+            console.error('Erreur : la réponse de l\'API n\'est pas un tableau');
         }
-    },
-    mounted() {
-        this.fetchMovies();
+    } catch (error) {
+        console.error('Erreur lors de la récupération des films:', error);
     }
-});
+};
+const goToFilmDetail = (id: number) => {
+    router.push(`/movie/${id}`);
+};
+onMounted(() => {
+    fetchMovies();
+})
+
 
 </script>

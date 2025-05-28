@@ -1,44 +1,44 @@
 {
     "prod": {
-        "API_URL": "http://brev01558.zf-world.com/NCT_api/prd",
-        "BASE_URL": "/NCT/prd/",
+        "API_URL": "http://brev01558.zf-world.com/Cinephoria_api/prd",
+        "BASE_URL": "/Cinephoria/prd/",
         "VERSION": "2.0.1",
-        "EXPORTS_PATH": "http://brev01558.zf-world.com/Content/NCT/exports/[UID].xlsx"
+        "EXPORTS_PATH": "http://brev01558.zf-world.com/Content/Cinephoria/exports/[UID].xlsx"
     },
     "local": {
-        "API_URL": "https://localhost:7142",
+        "API_URL": "https://localhost:7121",
         "BASE_URL": "",
         "VERSION": "2.0.1",
-        "EXPORTS_PATH": "http://localhost/Content/NCT/exports/[UID].xlsx"
+        "EXPORTS_PATH": "http://localhost/Content/Cinephoria/exports/[UID].xlsx"
     },
     "test": {
-        "API_URL": "http://localhost/NCT/api",
+        "API_URL": "http://localhost/Cinephoria/api",
         "BASE_URL": "",
         "VERSION": "2.0.1",
-        "EXPORTS_PATH": "http://localhost/Content/NCT/exports/[UID].xlsx"
+        "EXPORTS_PATH": "http://localhost/Content/Cinephoria/exports/[UID].xlsx"
     },
     "local_server": {
         "API_URL": "https://localhost:7142",
         "BASE_URL": "",
         "VERSION": "2.0.1",
-        "EXPORTS_PATH": "http://localhost/Content/NCT/exports/[UID].xlsx"
+        "EXPORTS_PATH": "http://localhost/Content/Cinephoria/exports/[UID].xlsx"
     },
     "prod_test": {
-        "API_URL": "http://brev01558.zf-world.com/NCT_api/test",
-        "BASE_URL": "/NCT/test/",
+        "API_URL": "http://brev01558.zf-world.com/Cinephoria_api/test",
+        "BASE_URL": "/Cinephoria/test/",
         "VERSION": "2.0.1",
-        "EXPORTS_PATH": "http://brev01558.zf-world.com/Content/NCT/exports/[UID].xlsx"
+        "EXPORTS_PATH": "http://brev01558.zf-world.com/Content/Cinephoria/exports/[UID].xlsx"
     },
     "prod_beta": {
-        "API_URL": "http://brev01558.zf-world.com/NCT_api/dev",
-        "BASE_URL": "/NCT/dev/",
+        "API_URL": "http://brev01558.zf-world.com/Cinephoria_api/dev",
+        "BASE_URL": "/Cinephoria/dev/",
         "VERSION": "2.0.1",
-        "EXPORTS_PATH": "http://brev01558.zf-world.com/Content/NCT/exports/[UID].xlsx"
+        "EXPORTS_PATH": "http://brev01558.zf-world.com/Content/Cinephoria/exports/[UID].xlsx"
     },
     "prod_radar": {
-        "API_URL": "http://brev01558.zf-world.com/NCT_api/dev",
-        "BASE_URL": "/NCT/dev/",
+        "API_URL": "http://brev01558.zf-world.com/Cinephoria_api/dev",
+        "BASE_URL": "/Cinephoria/dev/",
         "VERSION": "2.0.1",
-        "EXPORTS_PATH": "http://brev01558.zf-world.com/Content/NCT/exports/[UID].xlsx"
+        "EXPORTS_PATH": "http://brev01558.zf-world.com/Content/Cinephoria/exports/[UID].xlsx"
     }
 }
