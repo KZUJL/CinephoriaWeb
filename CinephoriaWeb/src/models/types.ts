@@ -64,5 +64,13 @@ export interface Seance {
     selected: boolean;
     reserved: boolean;
   }
+  export interface Reservation {
+    seatId: number;
+    userId: number;
+    cinemaId: number;
+    movieId: number;
+    reservationDate: string;
+    reservationTime: string;
+  }
   
  

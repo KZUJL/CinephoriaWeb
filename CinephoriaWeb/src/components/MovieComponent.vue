@@ -7,7 +7,7 @@
 
             <div class="row">
                 <div class="col-12 col-lg-2 mb-4" v-for="film in movies" :key="film.movieId">
-                    <div class="card h-100 custom-btn" @click="goToFilmDetail(film.movieId)">
+                    <div class="card h-100 custom-card" @click="goToFilmDetail(film.movieId)">
                         <img :src="film.poster" :alt="film.title" :title="film.title"
                             style="object-fit: cover; height: 300px;">
                         <div class="card-body text-start">

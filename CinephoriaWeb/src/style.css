@@ -46,35 +46,54 @@ main {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #02385A;
+
+  background: radial-gradient(circle at 30% 30%, rgba(0, 255, 200, 0.25), transparent 40%),
+    linear-gradient(135deg, #1e1f2f, #2c3e50);
+  background-repeat: no-repeat;
+  background-size: cover;
 }
+
 
 .custom_main {
   background-color: #024566;
+  background: radial-gradient(circle at 30% 30%, rgba(0, 255, 200, 0.25), transparent 40%),
+    linear-gradient(135deg, #1e1f2f, #2c3e50);
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .custom_sd_primary {
-  background-color: #025273;
+  background: radial-gradient(circle at 30% 30%, rgba(0, 255, 200, 0.25), transparent 40%),
+    linear-gradient(135deg, #1e1f2f, #2c3e50);
+  background-repeat: no-repeat;
+  background-size: cover;
 }
+
 
 /* ---------------------- */
 /* 4. Boutons Personnalisés */
 /* ---------------------- */
 .custom-btn {
-  background-color: #02385A !important;
+  background-color: rgb(21, 79, 84) !important;
   border: none;
   color: white !important;
 }
 
 .custom-btn:hover {
-  background-color: #025273 !important;
+  background-color: rgb(35, 113, 120) !important;
 }
 
 .active-btn {
-  background-color: #025273 !important;
+  background-color: rgb(35, 113, 120) !important;
   /* Changer la couleur pour l'état actif */
-  border-color: #02385A;
+  border-color: wheat;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.custom-card {
+  background-color: rgb(21, 79, 84) !important;
+  border: wheat 1px solid;
+  color: white !important;
 }
 
 /* ---------------------- */
@@ -107,8 +126,8 @@ ul li a {
 }
 
 .film-image {
-  width: 200px;
-  height: 260px;
+  width: 210px;
+  height: 300px;
   border-radius: 8px;
   display: block;
   margin-bottom: 8px;
@@ -198,6 +217,9 @@ ul li a {
 
 .movie-info {
   flex: 1;
+  background: #ffffff0f;
+  color: wheat;
+  padding: 1em;
   /* Permet à la section d'infos de prendre tout l'espace restant */
 }
 
@@ -236,4 +258,20 @@ ul li a {
   font-weight: bold;
   color: white;
   line-height: 30px;
+}
+
+.play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4rem;
+  color: white;
+  text-shadow: 0 0 10px black;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.play-icon:hover {
+  transform: translate(-50%, -50%) scale(1.1);
 }

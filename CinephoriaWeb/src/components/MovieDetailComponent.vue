@@ -3,22 +3,23 @@
         <div class="section mb-4" v-if="movieDetails">
             <div class="movie-content">
                 <!-- Poster du film -->
-                <div class="movie-poster">
-                    <img :src="movieDetails.poster" :alt="movieDetails.title" class="film-image">
-                    <button :aria-label="`Voir la bande-annonce de ${movieDetails?.title}`" type="button"
-                        class="btn btn-secondary w-100" @click="openModal">
-                        Bande annonce
-                    </button>
+                <div class="movie-poster position-relative d-inline-block">
+                    <img :src="movieDetails.poster" :alt="movieDetails.title" class="film-image" />
+
+                    <!-- Icône Bootstrap centrée -->
+                    <i class="bi bi-play-circle-fill play-icon" @click="openModal"
+                        :aria-label="`Voir la bande-annonce de ${movieDetails?.title}`" role="button" tabindex="0"></i>
+
                     <TrailerModal :trailerUrl="movieDetails?.trailer" />
                 </div>
 
                 <!-- Informations du film -->
-                <div class="movie-info">
+                <div class="card movie-info">
                     <div class="d-flex align-items-center flex-wrap">
-                        <h2 class="mb-0 me-2">
+                        <h2 class="mb-2 me-2">
                             {{ movieDetails.title }}
                         </h2>
-                        <div>
+                        <div class="mb-2">
                             <span class="badge rounded-pill text-bg-secondary me-1">{{ movieDetails.genre }}</span>
                             <span class="badge rounded-pill text-bg-secondary">
                                 {{ formatDuration(movieDetails.duration) }}
@@ -26,6 +27,9 @@
                         </div>
                     </div>
                     <div>
+                        <div class="row mb-2 align-items-center">
+
+                        </div>
                         <!-- Date de sortie -->
                         <div class="row mb-2 align-items-center">
                             <div class="col-12 d-flex flex-wrap align-items-center">
@@ -72,8 +76,10 @@ import type { Film } from '../models/types';
 import { Modal } from 'bootstrap';
 import TrailerModal from './modal/TrailerModal.vue';
 
+
 const movieDetails = ref<Film | null>(null);
 const route = useRoute();
+
 
 // Fonction pour récupérer les détails du film
 const fetchMovieDetails = async (movieId: number) => {

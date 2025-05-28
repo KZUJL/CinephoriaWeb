@@ -18,5 +18,4 @@ import { RouterView } from 'vue-router';
       <FooterComponent />
     </footer>
   </div>
-
 </template>

@@ -36,6 +36,7 @@ const api = new ApiCinephoria();
 const cinemas = ref<Cinema[]>([]);
 const movies = ref<Seance[]>([]);
 const selectedCinemaId = ref<number | null>(null);
+const user = ref(null);
 
 // Appel API : Cinémas
 const fetchCinemas = async () => {
@@ -95,12 +96,26 @@ const filteredMovieTimes = computed(() => {
 
 // Navigation vers la réservation
 const goToMovieReservation = (movieId: number, cinemaId: number) => {
-    router.push({ name: 'movieReservation', params: { movieId, cinemaId } });
+    if (user.value) {
+        router.push({ name: 'movieReservation', params: { movieId, cinemaId } });
+    } else {
+        router.push({ name: 'login' });
+    }
 };
 
 // Initialisation des données au montage
 onMounted(() => {
+    const userString = localStorage.getItem('user');
+    if (userString) {
+        try {
+            user.value = JSON.parse(userString);
+        } catch (e) {
+            console.warn("Erreur lors du parsing de l'utilisateur :", e);
+            user.value = null;
+        }
+    }
     fetchCinemas();
     fetchMoviesTimes();
+
 });
 </script>

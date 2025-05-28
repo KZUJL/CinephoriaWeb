@@ -65,6 +65,31 @@ export default class ApiCinephoria {
     }
 
 
+private fetchMoviesCinema(endpoint: string, params: object) {
+        console.log(`Fetching movies from ${this.API_URL}${endpoint}`);
+        return axios
+            .get(`${this.API_URL}${endpoint}`, { params: params })
+            .then((response) => {
+                console.log(`${endpoint} API response:`, response.data);
+                return response.data;  // Résoudre la promesse avec les données
+            })
+            .catch((error) => {
+                console.error(`Error fetching movies from ${endpoint}:`, error);
+                throw error;  // Rejeter la promesse avec l'erreur
+            });
+    }
+    /**
+     * Récupère les films disponibles dans un cinéma spécifique via l'API.
+     * @param {object} filters - Les filtres à appliquer (cinemaId, movieId).
+     * @returns {Promise<any>} Une promesse résolue avec les films correspondant aux filtres.
+     */
+    getMoviesCinemaId(filters: { cinemaId?: number, movieId?: number}) {
+        // Appel à la méthode générique fetchReservations avec les filtres comme paramètres
+        return this.fetchMoviesCinema('/api/MovieTimes', filters);
+    }
+
+
+
 
     private fetchCinemas(endpoint: string) {
         console.log(`Fetching cinemas from ${this.API_URL}${endpoint}`);
@@ -106,6 +131,7 @@ export default class ApiCinephoria {
     getSeancesByMovieTimesId(id: number) {
         return this.fetchMovieTimes(`/api/MovieTimes/ByMovieTimes/${id}`);
     }
+    
 
     private fetchSeatsByRoom(endpoint: string) {
         console.log(`Fetching seats by room from ${this.API_URL}${endpoint}`);
@@ -183,10 +209,31 @@ export default class ApiCinephoria {
      * @param {object} filters - Les filtres à appliquer (cinemaId, movieId, reservationDate, reservationTime).
      * @returns {Promise<any>} Une promesse résolue avec les réservations correspondant aux filtres.
      */
-    getReservations(filters: { cinemaId?: number, movieId?: number, reservationDate?: string, reservationTime?: string }) {
+    getReservations(filters: { cinemaId?: number,userId?:number, movieId?: number, reservationDate?: string, reservationTime?: string }) {
         // Appel à la méthode générique fetchReservations avec les filtres comme paramètres
         return this.fetchReservations('/api/Reservation', filters);
     }
 
+    /**
+     * Méthode pour effectuer une requête POST d'authentification.
+     * @param {object} params - Les données de connexion (ex: email, mot de passe).
+     * @returns {Promise<any>} Une promesse résolue avec les informations d'authentification.
+     */
+    private fetchLogin(endpoint: string, params: object) {
+        console.log(`Authenticating user at ${this.API_URL}${endpoint}`, params);
+        return axios
+            .post(`${this.API_URL}/api/Login/authenticate`, params)
+            .then((response) => {
+                console.log(`${endpoint} API response:`, response.data);
+                return response.data;
+            })
+            .catch((error) => {
+                console.error(`Error authenticating user:`, error);
+                throw error;
+            });
+    }
 
+    postLogin(filters: { email?: string, password?: string}) {
+        return this.fetchLogin('/api/Login/authenticate', filters);
+    }
 }

@@ -3,19 +3,20 @@
         <div class="section mb-4" v-if="movieDetails">
             <div class="movie-content">
                 <!-- Poster du film -->
-                <div class="movie-poster">
-                    <img :src="movieDetails.poster" :alt="movieDetails.title" class="film-image">
-                    <button type="button" class="btn btn-secondary w-100" @click="openModal">Bande annonce</button>
+                <div class="movie-poster position-relative d-inline-block">
+                    <img :src="movieDetails.poster" :alt="movieDetails.title" class="film-image" />
+                    <!-- Icône Bootstrap centrée -->
+                    <i class="bi bi-play-circle-fill play-icon" @click="openModal"
+                        :aria-label="`Voir la bande-annonce de ${movieDetails?.title}`" role="button" tabindex="0"></i>
                     <TrailerModal :trailerUrl="movieDetails?.trailer" />
                 </div>
-
                 <!-- Informations du film -->
-                <div class="movie-info">
+                <div class="card movie-info">
                     <div class="d-flex align-items-center flex-wrap">
-                        <h2 class="mb-0 me-2">
+                        <h2 class="mb-2 me-2">
                             {{ movieDetails.title }}
                         </h2>
-                        <div>
+                        <div class="mb-2">
                             <span class="badge rounded-pill text-bg-secondary me-1">{{ movieDetails.genre
                             }}</span>
                             <span class="badge rounded-pill text-bg-secondary">
@@ -56,7 +57,7 @@
                 </div>
             </div>
         </div>
-        <h2 class="text-center text-white font-weight-bold mb-3">Séance</h2>
+        <h2 class="text-center text-white font-weight-bold mb-3">Séances</h2>
         <hr class="cinema-divider mb-4" />
 
         <!-- Section des jours de la semaine et horaires -->
@@ -132,10 +133,10 @@ const formatReleaseDate = (dateStr: string | Date | null | undefined): string =>
     return date.toLocaleDateString('fr-FR', options);
 };
 
-const generateWeekDays = async (movieId: number) => {
+const generateWeekDays = async (movieId: number, cinemaId: number) => {
     const api = new ApiCinephoria();
     try {
-        const seances = await api.getSeancesByMovieId(movieId);
+        const seances = await api.getMoviesCinemaId({ movieId, cinemaId });
         const daysMap = new Map<string, { time: string; quality: string; movieTimesId: number }[]>();
 
         seances.forEach((seance: { day: string; startTime: string; room?: { quality?: string }; movieTimesId: number }) => {
@@ -195,8 +196,10 @@ const goToSeatsReservation = (movieTimesId: number) => {
 // Lors du montage, récupérer les détails du film et les horaires
 onMounted(() => {
     const movieId = Array.isArray(route.params.movieId) ? route.params.movieId[0] : route.params.movieId;
+    const cinemaId = Array.isArray(route.params.cinemaId) ? route.params.cinemaId[0] : route.params.cinemaId;
     const parsedMovieId = parseInt(movieId, 10);
+    const parsedCinemaId = parseInt(cinemaId, 10);
     fetchMovieDetails(parsedMovieId);
-    generateWeekDays(parsedMovieId);
+    generateWeekDays(parsedMovieId, parsedCinemaId);
 });
 </script>

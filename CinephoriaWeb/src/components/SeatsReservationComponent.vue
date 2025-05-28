@@ -30,7 +30,7 @@
 
         <!-- Sièges -->
         <div class="flex-grow-1 seats-zone">
-            <div class="d-flex flex-column align-items-center">
+            <div class="d-flex flex-column align-items-center p-2">
                 <div class="text-center mb-4">
                     <h2>Réservation de Sièges</h2>
                 </div>
@@ -39,23 +39,32 @@
                 <div v-for="(row, rowIndex) in seatRows" :key="rowIndex" class="d-flex mb-2">
                     <div v-for="(seat, colIndex) in row" :key="seat.locationId"
                         :class="['mx-1', (colIndex === 4 || colIndex === 11) ? 'ms-4' : '']">
-                        <button class="btn btn-sm seat"
-                            :class="seat.reserved ? 'btn-danger' : (seat.selected ? 'btn-success' : 'btn-outline-secondary')"
-                            :disabled="seat.reserved" @click="() => toggleSeatSelection(seat)">
-                            <span v-if="seat.type === 'handicap'" class="me-2">🦽</span>
+                        <button class="btn btn-sm seat" :class="[
+                            seat.type === 'Emplacement PMR'
+                                ? (seat.reserved ? 'btn-primary disabled' : (seat.selected ? 'btn-primary' : 'btn-outline-primary'))
+                                : (seat.reserved ? 'btn-danger' : (seat.selected ? 'btn-success' : 'btn-outline-secondary'))
+                        ]" :disabled="seat.reserved" @click="() => toggleSeatSelection(seat)"
+                            :title="seat.type === 'Emplacement PMR' ? 'Emplacement PMR' : ''">
                             {{ seat.name }}
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div class="text-center mt-4">
-                <span class="me-2"><strong>Place réservée(s) :</strong> {{ selectedSeats && selectedSeats.length }}
-                </span>
-                <span><strong>Tarifs :</strong> {{ price * (selectedSeats?.length || 0) }} Euros</span>
-                <button class="btn btn-light w-100" :disabled="!selectedSeats.length" @click="reserveSeats">
-                    Réserver
-                </button>
+            <div class="d-flex justify-content-center p-2">
+                <div class="card text-center " style="width: 20rem;">
+                    <span class="me-4"><strong>{{ selectedSeats &&
+                        selectedSeats.length }} Place réservée(s) / {{ price * (selectedSeats?.length || 0) }}
+                            Euros</strong>
+                    </span>
+                    <div v-for="seat in selectedSeats" :key="seat.locationId">
+                        {{ seat.name }} <span v-if="seat.type">({{ seat.type }})</span>
+                    </div>
+                    <button class="btn btn-warning me-4 w-100 mt-2" :disabled="!selectedSeats.length"
+                        @click="reserveSeats">
+                        Réserver
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -94,34 +103,50 @@ async function reserveSeats() {
     }
 
     const selectedSeatIds = selectedSeats.value.map(seat => seat.locationId);
-
-    const reservationData = {
-        userId: 1,
-        seatId: selectedSeatIds[0].toString(),
-        movieId: route.params.movieId,
-        cinemaId: route.params.cinemaId,
-        reservationDate: new Date(`${movieDay.value}T00:00:00Z`).toISOString(),
-        reservationTime: `${movieDay.value}T${startTime.value}:00`,
-    };
-
     const api = new ApiCinephoria();
+
+    const movieId = route.params.movieId;
+    const cinemaId = route.params.cinemaId;
+    const reservationDate = new Date(`${movieDay.value}T00:00:00Z`).toISOString();
+    const reservationTime = `${movieDay.value}T${startTime.value}:00`;
+
     try {
-        const response = await api.postReservation(reservationData);
-        if (response && response.id) {
-            alert('Réservation effectuée avec succès !');
-            const movieTimesId = parseInt(route.params.movieTimesId as string, 10);
-            const seance = await api.getSeancesByMovieTimesId(movieTimesId);
-            if (seance?.roomId) {
-                await fetchSeatsByRoomId(seance.roomId);
-            }
+        const results = await Promise.all(selectedSeatIds.map(async (seatId) => {
+            const reservationData = {
+                userId: 1,
+                seatId: seatId.toString(),
+                movieId,
+                cinemaId,
+                reservationDate,
+                reservationTime,
+            };
+            return await api.postReservation(reservationData);
+        }));
+
+        const successfulReservations = results.filter(res => res && res.id);
+        if (successfulReservations.length === selectedSeatIds.length) {
+            alert('Réservation de tous les sièges effectuée avec succès !');
+            window.location.href = "/dashboard";
+            return;
+        } else if (successfulReservations.length > 0) {
+            alert(`Réservation partielle réussie : ${successfulReservations.length} sur ${selectedSeatIds.length} sièges.`);
         } else {
-            alert('La réservation a échoué.');
+            alert('La réservation a échoué pour tous les sièges.');
         }
+
+        // Mise à jour des sièges
+        const movieTimesId = parseInt(route.params.movieTimesId as string, 10);
+        const seance = await api.getSeancesByMovieTimesId(movieTimesId);
+        if (seance?.roomId) {
+            await fetchSeatsByRoomId(seance.roomId);
+        }
+
     } catch (error) {
         console.error("Erreur lors de la réservation :", error);
         alert('Erreur lors de la réservation, veuillez réessayer.');
     }
 }
+
 
 async function fetchSeatsByRoomId(roomId: number) {
     const api = new ApiCinephoria();
