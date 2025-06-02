@@ -18,7 +18,7 @@
                         </h2>
                         <div class="mb-2">
                             <span class="badge rounded-pill text-bg-secondary me-1">{{ movieDetails.genre
-                            }}</span>
+                                }}</span>
                             <span class="badge rounded-pill text-bg-secondary">
                                 {{ formatDuration(movieDetails.duration) }}
                             </span>
@@ -139,12 +139,23 @@ const generateWeekDays = async (movieId: number, cinemaId: number) => {
         const seances = await api.getMoviesCinemaId({ movieId, cinemaId });
         const daysMap = new Map<string, { time: string; quality: string; movieTimesId: number }[]>();
 
+        // Date d'aujourd'hui à minuit
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
         seances.forEach((seance: { day: string; startTime: string; room?: { quality?: string }; movieTimesId: number }) => {
             const fullDateTimeStr = `${seance.day.substring(0, 10)}T${seance.startTime}`;
             const date = new Date(fullDateTimeStr);
 
             if (isNaN(date.getTime())) {
                 console.warn("Date invalide pour la séance :", fullDateTimeStr);
+                return;
+            }
+
+            // On ne garde que les séances aujourd'hui ou après
+            const seanceDate = new Date(date);
+            seanceDate.setHours(0, 0, 0, 0);
+            if (seanceDate < today) {
                 return;
             }
 

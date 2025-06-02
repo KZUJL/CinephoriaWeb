@@ -15,14 +15,20 @@
             <div v-if="reservations.length">
                 <div class="row g-3">
                     <div class="col-12" v-for="reservation in reservations" :key="reservation.userId">
-                        <div class="card shadow-sm">
+                        <div class="card shadow-sm custom-card">
                             <div class="card-body">
-                                <h5 class="card-title">Film ID : {{ reservation.movieId }}</h5>
+                                <h5 class="card-title"> {{ reservation.movieTitle }}</h5>
                                 <p class="card-text mb-1">
                                     📅 Date : {{ new Date(reservation.reservationDate).toLocaleDateString() }}
                                 </p>
                                 <p class="card-text mb-0">
                                     ⏰ Heure : {{ formatHour(reservation.reservationTime) }}
+                                </p>
+                                <p class="card-text mb-0">
+                                    🎬 {{ reservation.roomName }}
+                                </p>
+                                <p class="card-text mb-0">
+                                    💺 {{ reservation.seatName }}
                                 </p>
                             </div>
                         </div>
@@ -43,17 +49,23 @@
                 {{ errorMessage }}
             </div>
 
-            <div v-if="reservations.length">
+            <div v-if="oldreservations.length">
                 <div class="row g-3">
-                    <div class="col-12" v-for="reservation in reservations" :key="reservation.userId">
-                        <div class="card shadow-sm">
+                    <div class="col-12" v-for="oldreservation in oldreservations" :key="oldreservation.userId">
+                        <div class="card shadow-sm custom-card">
                             <div class="card-body">
-                                <h5 class="card-title">Film ID : {{ reservation.movieId }}</h5>
+                                <h5 class="card-title">Film ID : {{ oldreservation.movieTitle }}</h5>
                                 <p class="card-text mb-1">
-                                    📅 Date : {{ new Date(reservation.reservationDate).toLocaleDateString() }}
+                                    📅 Date : {{ new Date(oldreservation.reservationDate).toLocaleDateString() }}
                                 </p>
                                 <p class="card-text mb-0">
-                                    ⏰ Heure : {{ formatHour(reservation.reservationTime) }}
+                                    ⏰ Heure : {{ formatHour(oldreservation.reservationTime) }}
+                                </p>
+                                <p class="card-text mb-0">
+                                    🎬 {{ oldreservation.roomName }}
+                                </p>
+                                <p class="card-text mb-0">
+                                    💺 {{ oldreservation.seatName }}
                                 </p>
                             </div>
                         </div>
@@ -78,6 +90,7 @@ import type { Reservation } from '../models/types';
 
 const errorMessage = ref('');
 const reservations = ref<Reservation[]>([]);
+const oldreservations = ref<Reservation[]>([]);
 
 const dashboardReservation = async () => {
     const api = new ApiCinephoria();
@@ -95,10 +108,41 @@ const dashboardReservation = async () => {
         const response = await api.getReservations({
             userId: user.userId,
         });
-        console.log("Réponse brute de l'API :", response);
-        reservations.value = (response || []).sort((a, b) => {
-            return new Date(b.reservationDate).getTime() - new Date(a.reservationDate).getTime();
+
+        const now = new Date();
+        // Ajout des infos film et salle à chaque réservation
+        reservations.value = (response || [])
+            .filter(r => new Date(r.reservationDate) > now)
+            .sort((a, b) => new Date(b.reservationDate).getTime() - new Date(a.reservationDate).getTime());
+        console.log("Réponse reservation filtrée :", reservations.value);
+    }
+    catch (error) {
+        errorMessage.value = "Identifiants incorrects ou erreur serveur.";
+        console.error("Erreur d'authentification :", error);
+    }
+};
+
+const dashboardOldReservation = async () => {
+    const api = new ApiCinephoria();
+
+    try {
+        const userData = localStorage.getItem('user');
+        if (!userData) {
+            errorMessage.value = "Utilisateur non connecté.";
+            return;
+        }
+
+        const user = JSON.parse(userData);
+        console.log("Récupération des réservations pour userId:", user.userId);
+
+        const response = await api.getReservations({
+            userId: user.userId,
         });
+        const now = new Date();
+        oldreservations.value = (response || [])
+            .filter(r => new Date(r.reservationDate) < now)
+            .sort((a, b) => new Date(b.reservationDate).getTime() - new Date(a.reservationDate).getTime());
+        console.log("Réponse old reservation filtrée :", oldreservations.value);
     }
     catch (error) {
         errorMessage.value = "Identifiants incorrects ou erreur serveur.";
@@ -115,6 +159,7 @@ function formatHour(isoString: string) {
 
 onMounted(() => {
     dashboardReservation();
+    dashboardOldReservation();
 });
 
 const router = useRouter();
