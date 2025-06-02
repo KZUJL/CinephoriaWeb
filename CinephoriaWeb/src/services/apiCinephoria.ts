@@ -83,7 +83,7 @@ private fetchMoviesCinema(endpoint: string, params: object) {
      * @param {object} filters - Les filtres à appliquer (cinemaId, movieId).
      * @returns {Promise<any>} Une promesse résolue avec les films correspondant aux filtres.
      */
-    getMoviesCinemaId(filters: { cinemaId?: number, movieId?: number}) {
+    getMoviesCinemaId(filters: { cinemaId?: number, movieId?: number, roomId?: number}) {
         // Appel à la méthode générique fetchReservations avec les filtres comme paramètres
         return this.fetchMoviesCinema('/api/MovieTimes', filters);
     }
@@ -149,6 +149,32 @@ private fetchMoviesCinema(endpoint: string, params: object) {
     getSeatsByRoom(id: number) {
         return this.fetchSeatsByRoom(`/api/Seats/${id}`);
     }
+
+
+
+    private fetchSeats(endpoint: string, params: object) {
+        console.log(`Fetching seats from ${this.API_URL}${endpoint}`);
+        return axios
+            .get(`${this.API_URL}${endpoint}`, { params: params })
+            .then((response) => {
+                console.log(`${endpoint} API response:`, response.data);
+                return response.data;  
+            })
+            .catch((error) => {
+                console.error(`Error fetching seats from ${endpoint}:`, error);
+                throw error;  // Rejeter la promesse avec l'erreur
+            });
+    }
+      /**
+     * Récupère les données des siéges avec un numéro de siége spécifique via l'API.
+     * @param {object} filters - Les filtres à appliquer (cinemaId, movieId).
+     * @returns {Promise<any>} Une promesse résolue avec les films correspondant aux filtres.
+     */
+    getSeatsId(filters: { locationId?: number}) {
+        // Appel à la méthode générique fetchReservations avec les filtres comme paramètres
+        return this.fetchSeats('/api/Seats', filters);
+    }
+
 
 
 

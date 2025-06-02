@@ -5,6 +5,7 @@
             <div class="text-center">
                 <img :src="moviePoster" alt="Poster" class="img-fluid mb-3" style="max-width: 200px;" />
                 <h3>{{ movieTitle }}</h3>
+                <span>{{ RoomName }}</span>
             </div>
 
             <hr class="cinema-divider mb-3" />
@@ -25,6 +26,7 @@
                 <span>Séance :</span><br />
                 <span><strong>{{ startTime }}</strong></span><br />
                 <span>Fin prévue à {{ endTime }}</span>
+
             </div>
         </div>
 
@@ -86,6 +88,8 @@ const movieDay = ref('');
 const startTime = ref('');
 const endTime = ref('');
 const price = ref(0);
+const RoomName = ref('')
+const RoomId = ref('')
 
 const route = useRoute();
 
@@ -115,8 +119,13 @@ async function reserveSeats() {
             const reservationData = {
                 userId: 1,
                 seatId: seatId.toString(),
+                seatName: seats.value.find(s => s.locationId === seatId)?.name,
                 movieId,
+                movieTitle: movieTitle.value,
                 cinemaId,
+                cinemaName: cinemaName.value,
+                RoomId: RoomId.value,
+                RoomName: RoomName.value,
                 reservationDate,
                 reservationTime,
             };
@@ -231,6 +240,8 @@ onMounted(async () => {
         movieTitle.value = seance.movie.title;
         moviePoster.value = seance.movie.poster;
         cinemaName.value = seance.cinema.name;
+        RoomName.value = seance.room.name
+        RoomId.value = seance.room.roomId
         movieDay.value = new Date(seance.day).toISOString().split('T')[0];
         startTime.value = seance.startTime.slice(0, 5);
         endTime.value = seance.endTime.slice(0, 5);

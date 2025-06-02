@@ -71,6 +71,9 @@ export interface Seance {
     movieId: number;
     reservationDate: string;
     reservationTime: string;
+    movieTitle : string;
+    roomNumber : string;
+    seatName : string
   }
   
  
