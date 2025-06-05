@@ -47,7 +47,10 @@ const handleLogin = async () => {
         });
         localStorage.setItem('user', JSON.stringify(response));
 
-        const previousRoute = localStorage.getItem('previousRoute');
+        let previousRoute = localStorage.getItem('previousRoute');
+        if (previousRoute === '/createaccount') {
+            previousRoute = '/';
+        }
         router.push(previousRoute || '/').then(() => {
             window.location.reload();
         });

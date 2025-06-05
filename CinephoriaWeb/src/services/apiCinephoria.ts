@@ -60,12 +60,12 @@ export default class ApiCinephoria {
         return this.fetchMovies('/api/Movies/soon-available');
     }
 
-    getMoviesId(id: number){
+    getMoviesId(id: number) {
         return this.fetchMovies(`/api/Movies/${id}`)
     }
 
 
-private fetchMoviesCinema(endpoint: string, params: object) {
+    private fetchMoviesCinema(endpoint: string, params: object) {
         console.log(`Fetching movies from ${this.API_URL}${endpoint}`);
         return axios
             .get(`${this.API_URL}${endpoint}`, { params: params })
@@ -83,7 +83,7 @@ private fetchMoviesCinema(endpoint: string, params: object) {
      * @param {object} filters - Les filtres à appliquer (cinemaId, movieId).
      * @returns {Promise<any>} Une promesse résolue avec les films correspondant aux filtres.
      */
-    getMoviesCinemaId(filters: { cinemaId?: number, movieId?: number, roomId?: number}) {
+    getMoviesCinemaId(filters: { cinemaId?: number, movieId?: number, roomId?: number }) {
         // Appel à la méthode générique fetchReservations avec les filtres comme paramètres
         return this.fetchMoviesCinema('/api/MovieTimes', filters);
     }
@@ -97,11 +97,11 @@ private fetchMoviesCinema(endpoint: string, params: object) {
             .get(`${this.API_URL}${endpoint}`)
             .then((response) => {
                 console.log(`${endpoint} API response:`, response.data);
-                return response.data; 
+                return response.data;
             })
             .catch((error) => {
                 console.error(`Error fetching cinemas from ${endpoint}:`, error);
-                throw error;  
+                throw error;
             });
     }
     getCinemas() {
@@ -115,11 +115,11 @@ private fetchMoviesCinema(endpoint: string, params: object) {
             .get(`${this.API_URL}${endpoint}`)
             .then((response) => {
                 console.log(`${endpoint} API response:`, response.data);
-                return response.data; 
+                return response.data;
             })
             .catch((error) => {
                 console.error(`Error fetching movie times from ${endpoint}:`, error);
-                throw error;  
+                throw error;
             });
     }
     getMovieTimes() {
@@ -131,7 +131,7 @@ private fetchMoviesCinema(endpoint: string, params: object) {
     getSeancesByMovieTimesId(id: number) {
         return this.fetchMovieTimes(`/api/MovieTimes/ByMovieTimes/${id}`);
     }
-    
+
 
     private fetchSeatsByRoom(endpoint: string) {
         console.log(`Fetching seats by room from ${this.API_URL}${endpoint}`);
@@ -139,11 +139,11 @@ private fetchMoviesCinema(endpoint: string, params: object) {
             .get(`${this.API_URL}${endpoint}`)
             .then((response) => {
                 console.log(`${endpoint} API response:`, response.data);
-                return response.data; 
+                return response.data;
             })
             .catch((error) => {
                 console.error(`Error fetching seats by room from ${endpoint}:`, error);
-                throw error;  
+                throw error;
             });
     }
     getSeatsByRoom(id: number) {
@@ -158,19 +158,19 @@ private fetchMoviesCinema(endpoint: string, params: object) {
             .get(`${this.API_URL}${endpoint}`, { params: params })
             .then((response) => {
                 console.log(`${endpoint} API response:`, response.data);
-                return response.data;  
+                return response.data;
             })
             .catch((error) => {
                 console.error(`Error fetching seats from ${endpoint}:`, error);
                 throw error;  // Rejeter la promesse avec l'erreur
             });
     }
-      /**
-     * Récupère les données des siéges avec un numéro de siége spécifique via l'API.
-     * @param {object} filters - Les filtres à appliquer (cinemaId, movieId).
-     * @returns {Promise<any>} Une promesse résolue avec les films correspondant aux filtres.
-     */
-    getSeatsId(filters: { locationId?: number}) {
+    /**
+   * Récupère les données des siéges avec un numéro de siége spécifique via l'API.
+   * @param {object} filters - Les filtres à appliquer (cinemaId, movieId).
+   * @returns {Promise<any>} Une promesse résolue avec les films correspondant aux filtres.
+   */
+    getSeatsId(filters: { locationId?: number }) {
         // Appel à la méthode générique fetchReservations avec les filtres comme paramètres
         return this.fetchSeats('/api/Seats', filters);
     }
@@ -178,15 +178,15 @@ private fetchMoviesCinema(endpoint: string, params: object) {
 
 
 
-     /**
-     * Méthode générique pour effectuer une requête POST vers un endpoint spécifique.
-     * @private
-     * @param {string} endpoint - Le chemin de l'endpoint à appeler (ex. '/api/Reservation').
-     * @param {object} data - Les données à envoyer dans la requête POST.
-     * @returns {Promise<any>} Une promesse résolue avec les données de la réponse.
-     * @throws {Error} Lance une erreur si la requête échoue.
-     */
-     private fetchReservation(endpoint: string, data: object) {
+    /**
+    * Méthode générique pour effectuer une requête POST vers un endpoint spécifique.
+    * @private
+    * @param {string} endpoint - Le chemin de l'endpoint à appeler (ex. '/api/Reservation').
+    * @param {object} data - Les données à envoyer dans la requête POST.
+    * @returns {Promise<any>} Une promesse résolue avec les données de la réponse.
+    * @throws {Error} Lance une erreur si la requête échoue.
+    */
+    private fetchReservation(endpoint: string, data: object) {
         console.log(`Posting data to ${this.API_URL}${endpoint}`, data);
         return axios
             .post(`${this.API_URL}${endpoint}`, data)
@@ -208,14 +208,14 @@ private fetchMoviesCinema(endpoint: string, params: object) {
     postReservation(reservationData: object) {
         return this.fetchReservation('/api/Reservation', reservationData);
     }
-        /**
-     * Méthode générique pour effectuer une requête GET vers un endpoint spécifique avec des paramètres de filtre.
-     * @private
-     * @param {string} endpoint - Le chemin de l'endpoint à appeler (ex. '/api/Reservation').
-     * @param {object} params - Les paramètres à envoyer dans la requête GET (pour les filtres).
-     * @returns {Promise<any>} Une promesse résolue avec les données de la réponse.
-     * @throws {Error} Lance une erreur si la requête échoue.
-     */
+    /**
+ * Méthode générique pour effectuer une requête GET vers un endpoint spécifique avec des paramètres de filtre.
+ * @private
+ * @param {string} endpoint - Le chemin de l'endpoint à appeler (ex. '/api/Reservation').
+ * @param {object} params - Les paramètres à envoyer dans la requête GET (pour les filtres).
+ * @returns {Promise<any>} Une promesse résolue avec les données de la réponse.
+ * @throws {Error} Lance une erreur si la requête échoue.
+ */
     private fetchReservations(endpoint: string, params: object) {
         console.log(`Getting data from ${this.API_URL}${endpoint}`, params);
         return axios
@@ -235,7 +235,7 @@ private fetchMoviesCinema(endpoint: string, params: object) {
      * @param {object} filters - Les filtres à appliquer (cinemaId, movieId, reservationDate, reservationTime).
      * @returns {Promise<any>} Une promesse résolue avec les réservations correspondant aux filtres.
      */
-    getReservations(filters: { cinemaId?: number,userId?:number, movieId?: number, reservationDate?: string, reservationTime?: string }) {
+    getReservations(filters: { cinemaId?: number, userId?: number, movieId?: number, reservationDate?: string, reservationTime?: string }) {
         // Appel à la méthode générique fetchReservations avec les filtres comme paramètres
         return this.fetchReservations('/api/Reservation', filters);
     }
@@ -259,9 +259,62 @@ private fetchMoviesCinema(endpoint: string, params: object) {
             });
     }
 
-    postLogin(filters: { email?: string, password?: string}) {
+    postLogin(filters: { email?: string, password?: string }) {
         return this.fetchLogin('/api/Login/authenticate', filters);
     }
+
+        /**
+     * Méthode pour vérifier si une adresse e-mail est déjà utilisée.
+     * @param {string} email - L'adresse e-mail à vérifier.
+     * @returns {Promise<boolean>} Une promesse résolue avec `true` si l'e-mail existe, `false` sinon.
+     */
+        private fetchCheckEmail(endpoint: string, email: string): Promise<boolean> {
+            console.log(`Checking email at ${this.API_URL}${endpoint}?email=${email}`);
+            return axios
+                .get(`${this.API_URL}${endpoint}`, {
+                    params: { email }
+                })
+                .then((response) => {
+                    console.log(`Email check response:`, response.data);
+                    return response.data;
+                })
+                .catch((error) => {
+                    console.error(`Error checking email:`, error);
+                    throw error;
+                });
+        }
+
+        getEmailExists(email: string): Promise<boolean> {
+            return this.fetchCheckEmail('/api/Login/check-email', email);
+        }
+
+
+    /**
+     * Méthode pour envoyer une requête POST de création de compte utilisateur.
+     * @param {object} data - Les informations d'inscription de l'utilisateur.
+     * @returns {Promise<any>} - La réponse de l'API après création.
+     */
+        postCreateAccount(data: {
+            firstName: string
+            lastName: string
+            email: string
+            password: string
+            roleId: number
+            userName: string
+            }) {
+            return axios
+                .post(`${this.API_URL}/api/Login`, data)
+                .then((response) => {
+                console.log('Compte créé avec succès :', response.data)
+                return response.data
+                })
+                .catch((error) => {
+                console.error('Erreur lors de la création du compte :', error)
+                throw error
+                })
+            }
+
+
 
     private fetchReviews(endpoint: string, params: object) {
         console.log(`Getting reviews data from ${this.API_URL}${endpoint}`, params);
@@ -269,11 +322,11 @@ private fetchMoviesCinema(endpoint: string, params: object) {
             .get(`${this.API_URL}${endpoint}`, { params: params })
             .then((response) => {
                 console.log(`${endpoint} API response:`, response.data);
-                return response.data; 
+                return response.data;
             })
             .catch((error) => {
                 console.error(`Error getting reviews data from ${endpoint}:`, error);
-                throw error; 
+                throw error;
             });
     }
 
@@ -282,21 +335,21 @@ private fetchMoviesCinema(endpoint: string, params: object) {
      * @param {object} filters - Les filtres à appliquer (userId, movieId).
      * @returns {Promise<any>} Une promesse résolue avec les réservations correspondant aux filtres.
      */
-    getReviews(filters: { userId?:number, movieId?: number}) {    
+    getReviews(filters: { userId?: number, movieId?: number }) {
         return this.fetchReviews('/api/Reviews', filters);
     }
 
-     private fetchReviewsAverage(endpoint: string) {
+    private fetchReviewsAverage(endpoint: string) {
         console.log(`Getting average reviews data from ${this.API_URL}${endpoint}`);
         return axios
             .get(`${this.API_URL}${endpoint}`)
             .then((response) => {
                 console.log(`${endpoint} API response:`, response.data);
-                return response.data; 
+                return response.data;
             })
             .catch((error) => {
                 console.error(`Error getting average reviews data from ${endpoint}:`, error);
-                throw error; 
+                throw error;
             });
     }
 
@@ -306,10 +359,9 @@ private fetchMoviesCinema(endpoint: string, params: object) {
      * @returns {Promise<any>} Une promesse résolue avec les réservations correspondant aux filtres.
      */
     getReviewsAverage(id: number) {
-    return this.fetchReviewsAverage(`/api/Reviews/average?movieId=${id}`);
-}
+        return this.fetchReviewsAverage(`/api/Reviews/average?movieId=${id}`);
+    }
 
 }
 
 
- 

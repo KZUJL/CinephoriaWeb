@@ -289,3 +289,8 @@ ul li a {
   background-color: rgb(21, 79, 84);
   color: wheat;
 }
+
+.modal-content {
+  background-color: rgb(21, 79, 84);
+  border: 2px solid white
+}
