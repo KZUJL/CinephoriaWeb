@@ -262,4 +262,54 @@ private fetchMoviesCinema(endpoint: string, params: object) {
     postLogin(filters: { email?: string, password?: string}) {
         return this.fetchLogin('/api/Login/authenticate', filters);
     }
+
+    private fetchReviews(endpoint: string, params: object) {
+        console.log(`Getting reviews data from ${this.API_URL}${endpoint}`, params);
+        return axios
+            .get(`${this.API_URL}${endpoint}`, { params: params })
+            .then((response) => {
+                console.log(`${endpoint} API response:`, response.data);
+                return response.data; 
+            })
+            .catch((error) => {
+                console.error(`Error getting reviews data from ${endpoint}:`, error);
+                throw error; 
+            });
+    }
+
+    /**
+     * Récupère les avis avec des filtres via l'API.
+     * @param {object} filters - Les filtres à appliquer (userId, movieId).
+     * @returns {Promise<any>} Une promesse résolue avec les réservations correspondant aux filtres.
+     */
+    getReviews(filters: { userId?:number, movieId?: number}) {    
+        return this.fetchReviews('/api/Reviews', filters);
+    }
+
+     private fetchReviewsAverage(endpoint: string) {
+        console.log(`Getting average reviews data from ${this.API_URL}${endpoint}`);
+        return axios
+            .get(`${this.API_URL}${endpoint}`)
+            .then((response) => {
+                console.log(`${endpoint} API response:`, response.data);
+                return response.data; 
+            })
+            .catch((error) => {
+                console.error(`Error getting average reviews data from ${endpoint}:`, error);
+                throw error; 
+            });
+    }
+
+    /**
+     * Récupère les avis avec des filtres via l'API.
+     * @param {object} filters - Les filtres à appliquer (userId, movieId).
+     * @returns {Promise<any>} Une promesse résolue avec les réservations correspondant aux filtres.
+     */
+    getReviewsAverage(id: number) {
+    return this.fetchReviewsAverage(`/api/Reviews/average?movieId=${id}`);
 }
+
+}
+
+
+ 

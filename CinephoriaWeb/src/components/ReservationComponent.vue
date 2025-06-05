@@ -8,17 +8,53 @@
                 </option>
             </select>
         </div>
-        <div class="section mb-4">
-            <ul class="d-flex flex-wrap">
-                <li v-for="seance in filteredMovieTimes" :key="seance.movieTimesId" class="film-item">
-                    <img :src="seance.movie.poster" :alt="seance.movie.title" class="film-image"
-                        @click.prevent="goToMovieReservation(seance.movie.movieId, seance.cinemaId)" />
-                    <div class="card-body">
-                        <h6 class="card-title text-center">{{ seance.movie.title }}</h6>
+        <div class="row">
+            <div class="col-12 col-lg-2 mb-4" v-for="seance in filteredMovieTimes" :key="seance.movieTimesId">
+                <div class="card h-100 custom-card"
+                    @click="goToMovieReservation(seance.movie.movieId, seance.cinemaId)">
+                    <img :src="seance.movie.poster" :alt="seance.movie.title" :title="seance.movie.title"
+                        style="object-fit: cover; height: 300px;">
+
+                    <span v-if="seance.movie.isfavorite"
+                        class="position-absolute top-0 end-0 bg-danger text-white rounded-start px-2 py-1"
+                        style="font-size: 0.8rem; font-weight: bold;" title="Coup de cœur">
+                        Coup de cœur
+                    </span>
+
+                    <div class="card-body text-start position-relative" style="padding-bottom: 2.5rem;">
+                        <span class="font-weight-bold">{{ seance.movie.title }}</span>
+                        <br>
+                        <!-- Affichage de la note moyenne -->
+                        <div>
+                            <span
+                                v-if="seance.movie.averageReview !== null && seance.movie.averageReview !== undefined && seance.movie.averageReview > 0">
+                                <span v-for="n in 5" :key="n" style="font-size: 0.9em;">
+                                    <i v-if="n <= Math.floor(seance.movie.averageReview)"
+                                        class="fas fa-star text-warning"></i>
+                                    <i v-else-if="n - 0.5 <= seance.movie.averageReview"
+                                        class="fas fa-star-half-alt text-warning"></i>
+                                    <i v-else class="far fa-star text-secondary"></i>
+                                </span>
+                                <span class="ms-1 text-white" style="font-size: 0.7em;">
+                                    {{ seance.movie.averageReview.toFixed(1) }}
+                                </span>
+                            </span>
+                            <span v-else class="text-white" style="font-size: 0.7em;font-style: italic;">
+                                Pas encore d'avis
+                            </span>
+                        </div>
+
                     </div>
-                </li>
-                <li v-if="filteredMovieTimes.length === 0">Aucun film prévu cette semaine.</li>
-            </ul>
+
+                    <div>
+                        <span class="position-absolute start-0 bottom-0 mb-2 ms-2"
+                            style="font-size: 0.9em; font-style: italic; color: wheat;">
+                            {{ seance.movie.minimumAge }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </template>
@@ -31,12 +67,9 @@ import type { Cinema, Seance } from '../models/types';
 
 const router = useRouter();
 const api = new ApiCinephoria();
-
-// État réactif
 const cinemas = ref<Cinema[]>([]);
-const movies = ref<Seance[]>([]);
+const movieTimes = ref<Seance[]>([]);
 const selectedCinemaId = ref<number | null>(null);
-const user = ref(null);
 
 // Appel API : Cinémas
 const fetchCinemas = async () => {
@@ -58,7 +91,7 @@ const fetchMoviesTimes = async () => {
     try {
         const result = await api.getMovieTimes();
         if (Array.isArray(result)) {
-            movies.value = result;
+            movieTimes.value = result;
         } else {
             console.error("Erreur : la réponse de l'API films n'est pas un tableau");
         }
@@ -67,55 +100,52 @@ const fetchMoviesTimes = async () => {
     }
 };
 
-// Filtrage des séances (entre aujourd'hui et mercredi prochain)
 const filteredMovieTimes = computed(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const now = new Date();
 
-    const nextWednesday = new Date(today);
-    nextWednesday.setDate(today.getDate() + ((3 - today.getDay() + 7) % 7 + 1));
-    nextWednesday.setHours(23, 59, 59, 999);
+    // Calculer la date du prochain mercredi
+    const Wednesday = new Date();
+    const day = Wednesday.getDay();
+    const daysUntilWednesday = (3 - day + 7) % 7 || 7;
+    Wednesday.setDate(Wednesday.getDate() + daysUntilWednesday);
+    Wednesday.setHours(0, 0, 0, 0);
 
-    const seenMovieIds = new Set<number>();
+    const cinemaIdNum = Number(selectedCinemaId.value);
 
-    return movies.value.filter((seance) => {
-        const seanceDate = new Date(seance.day);
-        seanceDate.setHours(0, 0, 0, 0);
-
-        const isInRange = seanceDate >= today && seanceDate <= nextWednesday;
-        const isNotSeen = !seenMovieIds.has(seance.movie.movieId);
-        const isSameCinema = selectedCinemaId.value === null || seance.cinemaId === selectedCinemaId.value;
-
-        if (isInRange && isSameCinema && isNotSeen) {
-            seenMovieIds.add(seance.movie.movieId);
-            return true;
-        }
-        return false;
-    });
+    // Filtrer les séances du cinéma sélectionné 
+    return movieTimes.value.filter(session =>
+        session.cinemaId === cinemaIdNum && Wednesday >= new Date(session.day) &&
+        new Date(session.day) > now
+    );
 });
 
-// Navigation vers la réservation
-const goToMovieReservation = (movieId: number, cinemaId: number) => {
-    if (user.value) {
-        router.push({ name: 'movieReservation', params: { movieId, cinemaId } });
-    } else {
-        router.push({ name: 'login' });
+const fetchReviews = async (movieId: number) => {
+    try {
+        const reviewsData = await api.getReviewsAverage(movieId);
+        if (reviewsData) {
+            // Trouver toutes les séances correspondant à ce film
+            movieTimes.value
+                .filter(seance => seance.movie.movieId === movieId)
+                .forEach(seance => {
+                    seance.movie.averageReview = reviewsData.averageReview === 0 ? null : reviewsData.averageReview;
+                });
+        }
+    } catch (error) {
+        console.error('Erreur lors de la récupération des avis du film :', error);
     }
 };
 
-// Initialisation des données au montage
-onMounted(() => {
-    const userString = localStorage.getItem('user');
-    if (userString) {
-        try {
-            user.value = JSON.parse(userString);
-        } catch (e) {
-            console.warn("Erreur lors du parsing de l'utilisateur :", e);
-            user.value = null;
-        }
-    }
-    fetchCinemas();
-    fetchMoviesTimes();
+// Navigation vers la réservation
+const goToMovieReservation = (movieId: number, cinemaId: number) => {
+    router.push({ name: 'movieReservation', params: { movieId, cinemaId } });
+};
 
+// Initialisation des données au montage
+onMounted(async () => {
+    await fetchCinemas();
+    await fetchMoviesTimes();
+    for (const seance of movieTimes.value) {
+        await fetchReviews(seance.movie.movieId);
+    }
 });
 </script>

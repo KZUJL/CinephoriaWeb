@@ -110,9 +110,14 @@ const dashboardReservation = async () => {
         });
 
         const now = new Date();
+        now.setHours(0, 0, 0, 0);
         // Ajout des infos film et salle à chaque réservation
         reservations.value = (response || [])
-            .filter(r => new Date(r.reservationDate) > now)
+            .filter(r => {
+                const resDate = new Date(r.reservationDate);
+                // resDate.setHours(0, 0, 0, 0);
+                return resDate >= now;
+            })
             .sort((a, b) => new Date(b.reservationDate).getTime() - new Date(a.reservationDate).getTime());
         console.log("Réponse reservation filtrée :", reservations.value);
     }

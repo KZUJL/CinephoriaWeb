@@ -275,3 +275,17 @@ ul li a {
 .play-icon:hover {
   transform: translate(-50%, -50%) scale(1.1);
 }
+
+.form-select {
+  background-color: #ffffff0f;
+  color: inherit;
+  border: 1px solid wheat;
+  border-radius: 4px;
+  padding: 0.5em 1em;
+}
+
+/* Pour le menu déroulant */
+.form-select option {
+  background-color: rgb(21, 79, 84);
+  color: wheat;
+}
