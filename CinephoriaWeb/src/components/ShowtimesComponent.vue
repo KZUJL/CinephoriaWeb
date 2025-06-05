@@ -18,11 +18,34 @@
                         </h2>
                         <div class="mb-2">
                             <span class="badge rounded-pill text-bg-secondary me-1">{{ movieDetails.genre
-                                }}</span>
+                            }}</span>
                             <span class="badge rounded-pill text-bg-secondary">
                                 {{ formatDuration(movieDetails.duration) }}
                             </span>
+                            <span v-if="movieDetails.isfavorite"
+                                class="bg-danger text-white rounded-start px-2 py-1 ms-2"
+                                style="font-size: 0.8rem; font-weight: bold;" title="Coup de cœur">
+                                Coup de cœur
+                            </span>
                         </div>
+                    </div>
+                    <div>
+                        <span
+                            v-if="movieDetails.averageReview !== null && movieDetails.averageReview !== undefined && movieDetails.averageReview > 0">
+                            <span v-for="n in 5" :key="n" style="font-size: 0.9em;">
+                                <i v-if="n <= Math.floor(movieDetails.averageReview)"
+                                    class="fas fa-star text-warning"></i>
+                                <i v-else-if="n - 0.5 <= movieDetails.averageReview"
+                                    class="fas fa-star-half-alt text-warning"></i>
+                                <i v-else class="far fa-star text-secondary"></i>
+                            </span>
+                            <span class="ms-1 text-white" style="font-size: 0.7em;">
+                                {{ movieDetails.averageReview.toFixed(1) }}
+                            </span>
+                        </span>
+                        <span v-else class="text-white" style="font-size: 0.7em;font-style: italic;">
+                            Pas encore d'avis
+                        </span>
                     </div>
                     <div>
                         <!-- Date de sortie -->
@@ -61,7 +84,7 @@
         <hr class="cinema-divider mb-4" />
 
         <!-- Section des jours de la semaine et horaires -->
-        <div class="showtimes-section mt-4">
+        <div class="showtimes-section mt-4  mb-3">
             <div class="row">
                 <div class="col-12 col-md-6" v-for="(day, index) in weekDays" :key="index">
                     <div class="d-flex gap-4 align-items-center">
@@ -85,6 +108,32 @@
                 </div>
             </div>
         </div>
+        <hr class="cinema-divider mb-4" />
+        <div class="py-5">
+            <h5>Avis spectateur</h5>
+            <div v-if="movieDetails && movieDetails.reviews && movieDetails.reviews.length">
+                <div v-for="review in movieDetails.reviews" :key="review.id" class="card movie-info">
+                    <div class="fw-bold">{{ review.userName }}</div>
+                    <div>
+                        <span v-for="n in 5" :key="n" style="font-size: 0.9em;">
+                            <i v-if="n <= Math.floor(review.reviews)" class="fas fa-star text-warning"></i>
+                            <i v-else-if="n - 0.5 <= review.reviews" class="fas fa-star-half-alt text-warning"></i>
+                            <i v-else class="far fa-star text-secondary"></i>
+                        </span>
+
+                    </div>
+                    <div>{{ review.comments }}</div>
+                    <div>
+                        <span class="" style="font-size: 0.7em; font-style: italic;">
+                            le {{ new Date(review.reviewsDate).toLocaleDateString('fr-FR') }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div v-else>
+                <em>Aucun avis pour ce film.</em>
+            </div>
+        </div>
 
     </div>
 </template>
@@ -100,6 +149,7 @@ import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
 const route = useRoute();
+const user = ref(null);
 
 // Variables réactives
 const movieDetails = ref<Film | null>(null);
@@ -200,17 +250,69 @@ const isAvailable = (availableDate: string | Date | null | undefined): boolean =
     return available <= today;
 };
 
+const fetchReviewsAverage = async (movieId: number) => {
+    const api = new ApiCinephoria();
+    try {
+        const reviewsData = await api.getReviewsAverage(movieId);
+        if (reviewsData) {
+            // Met à jour la note moyenne du film
+            if (movieDetails.value && movieDetails.value.movieId === movieId) {
+                movieDetails.value.averageReview = reviewsData.averageReview === 0 ? null : reviewsData.averageReview;
+            }
+        }
+    } catch (error) {
+        console.error('Erreur lors de la récupération des avis du film :', error);
+    }
+};
+
+
+const fetchReviews = async (movieId: number) => {
+    const api = new ApiCinephoria();
+    try {
+        const reviews = await api.getReviews({ movieId });
+        if (reviews && movieDetails.value) {
+            movieDetails.value.reviews = reviews;
+        }
+    } catch (error) {
+        console.error('Erreur lors de la récupération des avis du film :', error);
+    }
+};
+
+
+// const goToSeatsReservation = (movieTimesId: number) => {
+//     router.push({ name: 'seatsReservation', params: { movieTimesId } });
+// };
+
+// Navigation vers la réservation
 const goToSeatsReservation = (movieTimesId: number) => {
-    router.push({ name: 'seatsReservation', params: { movieTimesId } });
+    if (user.value) {
+        router.push({ name: 'seatsReservation', params: { movieTimesId } });
+    } else {
+        router.push({ name: 'login' });
+    }
 };
 
 // Lors du montage, récupérer les détails du film et les horaires
-onMounted(() => {
+onMounted(async () => {
+
+    const userString = localStorage.getItem('user');
+    if (userString) {
+        try {
+            user.value = JSON.parse(userString);
+        } catch (e) {
+            console.warn("Erreur lors du parsing de l'utilisateur :", e);
+            user.value = null;
+        }
+    }
     const movieId = Array.isArray(route.params.movieId) ? route.params.movieId[0] : route.params.movieId;
     const cinemaId = Array.isArray(route.params.cinemaId) ? route.params.cinemaId[0] : route.params.cinemaId;
     const parsedMovieId = parseInt(movieId, 10);
     const parsedCinemaId = parseInt(cinemaId, 10);
-    fetchMovieDetails(parsedMovieId);
+    await fetchMovieDetails(parsedMovieId);
     generateWeekDays(parsedMovieId, parsedCinemaId);
+    if (movieDetails.value) {
+        fetchReviewsAverage(movieDetails.value.movieId);
+        fetchReviews(movieDetails.value.movieId);
+    }
 });
 </script>

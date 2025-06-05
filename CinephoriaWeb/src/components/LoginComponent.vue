@@ -1,6 +1,6 @@
 <template>
-    <div class="container mt-5" style="max-width: 400px;">
-        <div class="card shadow">
+    <div class="container mt-5" style="max-width: 500px;">
+        <div class="card custom-card">
             <div class="card-body">
                 <h3 class="card-title text-center mb-4">Connexion</h3>
                 <form @submit.prevent="handleLogin">
@@ -47,9 +47,13 @@ const handleLogin = async () => {
         });
         localStorage.setItem('user', JSON.stringify(response));
 
-        router.push('/').then(() => {
+        const previousRoute = localStorage.getItem('previousRoute');
+        router.push(previousRoute || '/').then(() => {
             window.location.reload();
         });
+        // router.push('/').then(() => {
+        //     window.location.reload();
+        // });
     } catch (error) {
         errorMessage.value = "Identifiants incorrects ou erreur serveur.";
         console.error("Erreur d'authentification :", error);

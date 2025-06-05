@@ -12,6 +12,10 @@ export interface Film {
     releaseDate: Date;
     availableDate: Date;
     trailer: string;
+    minimumAge: string;
+    isfavorite: boolean;
+    averageReview?: number;     
+    reviews?: Review[];
 
   }
 
@@ -72,8 +76,22 @@ export interface Seance {
     reservationDate: string;
     reservationTime: string;
     movieTitle : string;
-    roomNumber : string;
+    roomName : string;
     seatName : string
   }
-  
+  export interface AverageReviews {  
+    movieId: number;
+    averageReview: number   
+  }
+  export interface Review {
+  id: string;
+  userId: number;
+  userName: string;
+  movieId: number;
+  movieTitle: string;
+  reviews: number;
+  comments: string;
+  reviewsDate: string;
+}
+
  

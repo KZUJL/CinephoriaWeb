@@ -1,7 +1,7 @@
 <template>
     <div class="py-3 custom-container">
         <div class="section mb-4" v-if="movieDetails">
-            <div class="movie-content">
+            <div class="movie-content py-3">
                 <!-- Poster du film -->
                 <div class="movie-poster position-relative d-inline-block">
                     <img :src="movieDetails.poster" :alt="movieDetails.title" class="film-image" />
@@ -19,12 +19,35 @@
                         <h2 class="mb-2 me-2">
                             {{ movieDetails.title }}
                         </h2>
-                        <div class="mb-2">
+                        <div class="mb-2 d-flex align-items-center">
                             <span class="badge rounded-pill text-bg-secondary me-1">{{ movieDetails.genre }}</span>
-                            <span class="badge rounded-pill text-bg-secondary">
+                            <span class="badge rounded-pill text-bg-secondary me-2">
                                 {{ formatDuration(movieDetails.duration) }}
                             </span>
+                            <span v-if="movieDetails.isfavorite"
+                                class="bg-danger text-white rounded-start px-2 py-1 ms-2"
+                                style="font-size: 0.8rem; font-weight: bold;" title="Coup de cœur">
+                                Coup de cœur
+                            </span>
                         </div>
+                    </div>
+                    <div>
+                        <span
+                            v-if="movieDetails.averageReview !== null && movieDetails.averageReview !== undefined && movieDetails.averageReview > 0">
+                            <span v-for="n in 5" :key="n" style="font-size: 0.9em;">
+                                <i v-if="n <= Math.floor(movieDetails.averageReview)"
+                                    class="fas fa-star text-warning"></i>
+                                <i v-else-if="n - 0.5 <= movieDetails.averageReview"
+                                    class="fas fa-star-half-alt text-warning"></i>
+                                <i v-else class="far fa-star text-secondary"></i>
+                            </span>
+                            <span class="ms-1 text-white" style="font-size: 0.7em;">
+                                {{ movieDetails.averageReview.toFixed(1) }}
+                            </span>
+                        </span>
+                        <span v-else class="text-white" style="font-size: 0.7em;font-style: italic;">
+                            Pas encore d'avis
+                        </span>
                     </div>
                     <div>
                         <div class="row mb-2 align-items-center">
@@ -48,7 +71,7 @@
                         <!-- Réalisateur / Producteur -->
                         <div class="row mb-2">
                             <div class="col-12">
-                                <strong>Réalisateur :</strong> {{ movieDetails.director }}
+                                <strong>Réalisateurs :</strong> {{ movieDetails.director }}
                                 <strong> Producteur :</strong> {{ movieDetails.producer }}
                             </div>
                         </div>
@@ -62,6 +85,33 @@
                     </div>
 
                     <p>{{ movieDetails.description }}</p>
+                </div>
+
+
+            </div>
+            <div>
+                <h5>Avis spectateur</h5>
+                <div v-if="movieDetails && movieDetails.reviews && movieDetails.reviews.length">
+                    <div v-for="review in movieDetails.reviews" :key="review.id" class="card movie-info">
+                        <div class="fw-bold">{{ review.userName }}</div>
+                        <div>
+                            <span v-for="n in 5" :key="n" style="font-size: 0.9em;">
+                                <i v-if="n <= Math.floor(review.reviews)" class="fas fa-star text-warning"></i>
+                                <i v-else-if="n - 0.5 <= review.reviews" class="fas fa-star-half-alt text-warning"></i>
+                                <i v-else class="far fa-star text-secondary"></i>
+                            </span>
+
+                        </div>
+                        <div>{{ review.comments }}</div>
+                        <div>
+                            <span class="" style="font-size: 0.7em; font-style: italic;">
+                                le {{ new Date(review.reviewsDate).toLocaleDateString('fr-FR') }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div v-else>
+                    <em>Aucun avis pour ce film.</em>
                 </div>
             </div>
         </div>
@@ -95,6 +145,36 @@ const fetchMovieDetails = async (movieId: number) => {
         console.error('Erreur lors de la récupération des détails du film :', error);
     }
 };
+
+// Fonction pour récupérer les avis
+const fetchReviewsAverage = async (movieId: number) => {
+    const api = new ApiCinephoria();
+    try {
+        const reviewsData = await api.getReviewsAverage(movieId);
+        if (reviewsData) {
+            // Met à jour la note moyenne du film
+            if (movieDetails.value && movieDetails.value.movieId === movieId) {
+                movieDetails.value.averageReview = reviewsData.averageReview === 0 ? null : reviewsData.averageReview;
+            }
+        }
+    } catch (error) {
+        console.error('Erreur lors de la récupération des avis du film :', error);
+    }
+};
+
+
+const fetchReviews = async (movieId: number) => {
+    const api = new ApiCinephoria();
+    try {
+        const reviews = await api.getReviews({ movieId });
+        if (reviews && movieDetails.value) {
+            movieDetails.value.reviews = reviews;
+        }
+    } catch (error) {
+        console.error('Erreur lors de la récupération des avis du film :', error);
+    }
+};
+
 
 // Formatage de la durée
 const formatDuration = (duration: string | null | undefined): string => {
@@ -136,9 +216,13 @@ const isAvailable = (availableDate: Date | string | null | undefined): boolean =
 };
 
 // Récupération de l'ID du film à partir de la route et chargement des détails du film
-onMounted(() => {
+onMounted(async () => {
     const movieId = Array.isArray(route.params.movieId) ? route.params.movieId[0] : route.params.movieId;
     const parsedMovieId = parseInt(movieId, 10);
-    fetchMovieDetails(parsedMovieId);
+    await fetchMovieDetails(parsedMovieId);
+    if (movieDetails.value) {
+        fetchReviewsAverage(movieDetails.value.movieId);
+        fetchReviews(movieDetails.value.movieId);
+    }
 });
 </script>

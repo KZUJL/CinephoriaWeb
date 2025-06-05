@@ -48,6 +48,13 @@ const router = createRouter({
     }
     
   ]
+  
 })
+router.beforeEach((to, _from, next) => {
+    if (to.path !== '/login') {
+        localStorage.setItem('previousRoute', to.fullPath);
+    }
+    next();
+});
 
 export default router
