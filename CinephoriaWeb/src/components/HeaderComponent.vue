@@ -22,13 +22,15 @@
                 <span class="text-white me-3">Bienvenue, {{ userName }}</span>
             </template>
             <button class="btn btn-warning">Contactez-nous</button>
-            <router-link :to="userName ? '/dashboard' : '/login'">
-                <button class="btn custom-btn mx-2 d-flex align-items-center"
-                    :class="{ 'active-btn': isActiveRoute(userName ? '/dashboard' : '/login') }">
-                    <i class="bi bi-person-circle text-white" style="font-size: 1.8rem;"
-                        :title="userName ? 'Dashboard' : 'Connexion'"></i>
-                </button>
-            </router-link>
+
+            <button class="btn custom-btn mx-2 d-flex align-items-center"
+                :class="{ 'active-btn': isActiveRoute(userName ? '/dashboard' : '/login') }"
+                @click="userName ? $router.push('/dashboard') : openModal()">
+                <i class="bi bi-person-circle text-white" style="font-size: 1.8rem;"
+                    :title="userName ? 'Dashboard' : 'Connexion'"></i>
+            </button>
+
+            <LoginModal />
         </div>
     </div>
 </template>
@@ -37,9 +39,18 @@
 import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import logo from '../assets/CINEPHORIA_1.png';
+import { Modal } from 'bootstrap';
+import LoginModal from './modal/LoginModal.vue';
+
 
 const route = useRoute();
 const logoSrc = logo;
+
+
+const openModal = () => {
+    const modal = new Modal(document.getElementById('loginModal')!);
+    modal.show();
+};
 
 const isActiveRoute = (routePath: string) => {
     return route.path.startsWith(routePath);
