@@ -52,6 +52,7 @@ import ApiCinephoria from '../services/apiCinephoria';
 import { Modal } from 'bootstrap';
 import CreateAccountModal from './modal/CreateAccountModal.vue';
 
+
 const firstName = ref('')
 const lastName = ref('')
 const email = ref('')
@@ -91,11 +92,12 @@ const handleRegister = async () => {
             lastName: lastName.value,
             email: email.value,
             password: password.value,
-            roleId: 2,
+            roleId: 3,
             userName: username.value,
         });
         console.log('Utilisateur créé :', response);
         errorMessage.value = '';
+
         showSuccessModal();
 
     } catch (error) {
