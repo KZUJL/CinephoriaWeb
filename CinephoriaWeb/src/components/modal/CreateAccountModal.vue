@@ -8,7 +8,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                 </div>
                 <div class="modal-body">
-                    Inscription réussie. Un mail récapitulatif vous a été envoyé.
+                    Inscription réussie. Un mail de confirmation vous a été envoyé.
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
@@ -28,7 +28,9 @@ const router = useRouter()
 const modalRef = ref<HTMLElement | null>(null)
 
 const handleModalClosed = () => {
-    router.push('/')
+    if (router.currentRoute.value.path !== '/admin') {
+        router.push('/')
+    }
 }
 
 onMounted(() => {

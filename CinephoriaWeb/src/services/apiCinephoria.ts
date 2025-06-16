@@ -64,6 +64,86 @@ export default class ApiCinephoria {
         return this.fetchMovies(`/api/Movies/${id}`)
     }
 
+        /**
+     * Méthode générique pour effectuer une requête POST vers un endpoint spécifique.
+     * @private
+     * @param {string} endpoint - Le chemin de l'endpoint à appeler (ex. '/api/Movies').
+     * @param {object} data - Les données à envoyer dans le corps de la requête.
+     * @returns {Promise<any>} Une promesse résolue avec les données de la réponse.
+     * @throws {Error} Lance une erreur si la requête échoue.
+     */
+    private postMovie(endpoint: string, data: object) {
+        console.log(`Posting movie to ${this.API_URL}${endpoint}`, data);
+        return axios
+            .post(`${this.API_URL}${endpoint}`, data)
+            .then((response) => {
+                console.log(`${endpoint} API POST response:`, response.data);
+                return response.data;  // Résoudre la promesse avec les données reçues
+            })
+            .catch((error) => {
+                console.error(`Error posting movie to ${endpoint}:`, error);
+                throw error;  // Rejeter la promesse avec l'erreur
+            });
+    }
+
+    /**
+     * Crée un nouveau film via l'API.
+     * @param {object} movie - L'objet film à créer.
+     * @returns {Promise<any>} Une promesse résolue avec la réponse du serveur.
+     */
+    createMovie(movie: object) {
+        return this.postMovie('/api/Movies', movie);
+    }
+
+
+
+    private deleteMovie(endpoint: string) {
+        console.log(`Deleting movie at ${this.API_URL}${endpoint}`);
+        return axios
+            .delete(`${this.API_URL}${endpoint}`)
+            .then((response) => {
+                console.log(`${endpoint} API delete response:`, response.data);
+                return response.data;
+            })
+            .catch((error) => {
+                console.error(`Error deleting movie at ${endpoint}:`, error);
+                throw error;
+            });
+    }
+
+    /**
+     * Supprime un film via l'API.
+     * @param {number} id - L'identifiant du film à supprimer.
+     * @returns {Promise<any>} Une promesse résolue avec la réponse de l'API.
+     */
+    deleteMovieById(id: number) {
+        return this.deleteMovie(`/api/Movies/${id}`);
+    }
+
+
+    private updateMovie(endpoint: string, data: object) {
+        console.log(`Updating movie at ${this.API_URL}${endpoint}`, data);
+        return axios
+            .put(`${this.API_URL}${endpoint}`, data)
+            .then((response) => {
+                console.log(`${endpoint} API put response:`, response.data);
+                return response.data;
+            })
+            .catch((error) => {
+                console.error(`Error updating movie at ${endpoint}:`, error);
+                throw error;
+            });
+    }
+
+    /**
+     * Modifie un film via l'API.
+     * @param {number} id - L'identifiant du film à modifier.
+     * @param {object} movieData - Les données du film à mettre à jour.
+     * @returns {Promise<any>} Une promesse résolue avec la réponse de l'API.
+     */
+    updateMovieById(id: number, movieData: object) {
+        return this.updateMovie(`/api/Movies/${id}`, movieData);
+    }
 
     private fetchMoviesCinema(endpoint: string, params: object) {
         console.log(`Fetching movies from ${this.API_URL}${endpoint}`);
@@ -173,6 +253,64 @@ export default class ApiCinephoria {
     getSeatsId(filters: { locationId?: number }) {
         // Appel à la méthode générique fetchReservations avec les filtres comme paramètres
         return this.fetchSeats('/api/Seats', filters);
+    }
+
+    /**
+     * Crée un nouveau siège via l'API.
+     * @param {object} seatData - Les données du siège à créer.
+     * @returns {Promise<any>} Une promesse résolue avec la réponse du serveur.
+     */
+    postSeat(seatData: object) {
+        console.log(`Posting seat to ${this.API_URL}/api/Seats`, seatData);
+        return axios
+            .post(`${this.API_URL}/api/Seats`, seatData)
+            .then((response) => {
+                console.log(`/api/Seats API POST response:`, response.data);
+                return response.data;
+            })
+            .catch((error) => {
+                console.error(`Error posting seat to /api/Seats:`, error);
+                throw error;
+            });
+    }
+
+    /**
+     * Modifie un siège via l'API.
+     * @param {number} id - L'identifiant du siège à modifier.
+     * @param {object} seatData - Les données du siège à mettre à jour.
+     * @returns {Promise<any>} Une promesse résolue avec la réponse du serveur.
+     */
+    putSeat(id: number, seatData: object) {
+        console.log(`Updating seat at ${this.API_URL}/api/Seats/${id}`, seatData);
+        return axios
+            .put(`${this.API_URL}/api/Seats/${id}`, seatData)
+            .then((response) => {
+                console.log(`/api/Seats/${id} API PUT response:`, response.data);
+                return response.data;
+            })
+            .catch((error) => {
+                console.error(`Error updating seat at /api/Seats/${id}:`, error);
+                throw error;
+            });
+    }
+
+    /**
+     * Supprime un siège via l'API.
+     * @param {number} id - L'identifiant du siège à supprimer.
+     * @returns {Promise<any>} Une promesse résolue avec la réponse du serveur.
+     */
+    deleteSeat(id: number) {
+        console.log(`Deleting seat at ${this.API_URL}/api/Seats/${id}`);
+        return axios
+            .delete(`${this.API_URL}/api/Seats/${id}`)
+            .then((response) => {
+                console.log(`/api/Seats/${id} API DELETE response:`, response.data);
+                return response.data;
+            })
+            .catch((error) => {
+                console.error(`Error deleting seat at /api/Seats/${id}:`, error);
+                throw error;
+            });
     }
 
 
@@ -360,6 +498,76 @@ export default class ApiCinephoria {
      */
     getReviewsAverage(id: number) {
         return this.fetchReviewsAverage(`/api/Reviews/average?movieId=${id}`);
+    }
+
+    /**
+     * Méthode générique pour effectuer une requête GET vers un endpoint spécifique pour les salles.
+     * @private
+     * @param {string} endpoint - Le chemin de l'endpoint à appeler (ex. '/api/Room').
+     * @param {object} [params] - Les paramètres optionnels à envoyer dans la requête GET.
+     * @returns {Promise<any>} Une promesse résolue avec les données de la réponse.
+     * @throws {Error} Lance une erreur si la requête échoue.
+     */
+    private fetchRooms(endpoint: string, params?: { roomId?: number }) {
+        console.log(`Fetching rooms from ${this.API_URL}${endpoint}`, params);
+        return axios
+            .get(`${this.API_URL}${endpoint}`, { params })
+            .then((response) => {
+                console.log(`${endpoint} API response:`, response.data);
+                return response.data;
+            })
+            .catch((error) => {
+                console.error(`Error fetching rooms from ${endpoint}:`, error);
+                throw error;
+            });
+    }
+
+    /**
+     * Récupère toutes les salles disponibles via l'API, avec un filtre optionnel sur roomId.
+     * @param {object} [filters] - Les filtres à appliquer (roomId).
+     * @returns {Promise<any>} Une promesse résolue avec les données des salles.
+     */
+    getRooms(filters?: { roomId?: number }) {
+        return this.fetchRooms('/api/Room', filters);
+    }
+
+    /**
+     * Crée une nouvelle salle via l'API.
+     * @param {object} roomData - Les données de la salle à créer.
+     * @returns {Promise<any>} Une promesse résolue avec la réponse du serveur.
+     */
+    postRoom(roomData: object) {
+        console.log(`Posting room to ${this.API_URL}/api/Room`, roomData);
+        return axios
+            .post(`${this.API_URL}/api/Room`, roomData)
+            .then((response) => {
+                console.log(`/api/Room API POST response:`, response.data);
+                return response.data;
+            })
+            .catch((error) => {
+                console.error(`Error posting room to /api/Room:`, error);
+                throw error;
+            });
+    }
+
+    /**
+     * Modifie une salle via l'API.
+     * @param {number} id - L'identifiant de la salle à modifier.
+     * @param {object} roomData - Les données de la salle à mettre à jour.
+     * @returns {Promise<any>} Une promesse résolue avec la réponse du serveur.
+     */
+    putRoom(id: number, roomData: object) {
+        console.log(`Updating room at ${this.API_URL}/api/Room/${id}`, roomData);
+        return axios
+            .put(`${this.API_URL}/api/Room/${id}`, roomData)
+            .then((response) => {
+                console.log(`/api/Room/${id} API PUT response:`, response.data);
+                return response.data;
+            })
+            .catch((error) => {
+                console.error(`Error updating room at /api/Room/${id}:`, error);
+                throw error;
+            });
     }
 
 }

@@ -18,7 +18,6 @@
                 </select>
 
                 <!-- Sélection de la date -->
-                <!-- Sélection de la date -->
                 <select id="dateSelect" class="form-select" v-model="selectedDate" style="max-width: 220px;">
                     <option value="">Toutes les dates</option>
                     <option v-for="date in availableDates" :key="date" :value="date">
@@ -33,7 +32,7 @@
             <div class="row">
                 <div class="col-12 col-lg-2 mb-4" v-for="film in filteredMovies" :key="film.movieId">
 
-                    <div class="card h-100 custom-card" @click="handleFilmClick(film)">
+                    <div class="card h-100 movie-info  pointer" @click="handleFilmClick(film)">
                         <img :src="film.poster" :alt="film.title" :title="film.title"
                             style="object-fit: cover; height: 300px;">
                         <span v-if="film.isfavorite"
@@ -107,26 +106,26 @@ const genres = computed(() => {
 });
 
 // Calcule le prochain mercredi à 23h59
-const getNextWednesday = (fromDate: Date): Date => {
-    const date = new Date(fromDate);
-    const day = date.getDay();
-    const daysToAdd = (3 - day + 7) % 7; // 3 = mercredi
-    date.setDate(date.getDate() + daysToAdd);
-    date.setHours(23, 59, 59, 999);
-    return date;
-};
+// const getNextWednesday = (fromDate: Date): Date => {
+//     const date = new Date(fromDate);
+//     const day = date.getDay();
+//     const daysToAdd = (3 - day + 7) % 7; // 3 = mercredi
+//     date.setDate(date.getDate() + daysToAdd);
+//     date.setHours(23, 59, 59, 999);
+//     return date;
+// };
 
 // Liste des films filtrés par genre, cinéma, date et jusqu’à mercredi
 const filteredMovies = computed(() => {
     const now = new Date();
-    const nextWednesday = getNextWednesday(now);
+    // const nextWednesday = getNextWednesday(now);
 
     const cinemaId = Number(selectedCinemaId.value) || null;
     const selected = selectedDate.value ? new Date(selectedDate.value) : null;
 
     const validSessions = movieTimes.value.filter(session => {
         const sessionDate = new Date(session.day);
-        if (sessionDate <= now || sessionDate > nextWednesday) return false;
+        if (sessionDate <= now) return false;
         if (cinemaId && session.cinemaId !== cinemaId) return false;
         if (selected && sessionDate.toDateString() !== selected.toDateString()) return false;
         return true;
@@ -144,7 +143,7 @@ const filteredMovies = computed(() => {
 // Liste des dates disponibles pour les séances à venir jusqu’à mercredi
 const availableDates = computed(() => {
     const now = new Date();
-    const nextWednesday = getNextWednesday(now);
+    // const nextWednesday = getNextWednesday(now);
     const cinemaId = Number(selectedCinemaId.value) || null;
 
     const datesSet = new Set<string>();
@@ -152,7 +151,7 @@ const availableDates = computed(() => {
         const sessionDate = new Date(session.day);
         if (
             sessionDate >= now &&
-            sessionDate <= nextWednesday &&
+            // sessionDate <= nextWednesday &&
             (!cinemaId || session.cinemaId === cinemaId)
         ) {
             datesSet.add(formatDate(sessionDate));

@@ -1,9 +1,16 @@
 <template>
-    <div class="py-3">
+    <div class="py-3 ">
         <div class="d-flex justify-content-end mb-3 p-3 py-1">
             <button @click="logout" class="btn btn-danger">Déconnexion</button>
         </div>
         <h1 class="text-center mb-4">Bienvenue dans votre tableau de bord</h1>
+        <div class="container py-1">
+            <div class="d-flex justify-content-start align-items-center mb-2">
+                <div v-if="userRoleId === 1">
+                    <button class="btn btn-primary" @click="goToAdmin">Administration</button>
+                </div>
+            </div>
+        </div>
 
         <div class="mes-reservations container py-3">
             <h2 class="mb-4">Mes réservations</h2>
@@ -15,7 +22,7 @@
             <div v-if="reservations.length">
                 <div class="row g-3">
                     <div class="col-12" v-for="reservation in reservations" :key="reservation.userId">
-                        <div class="card shadow-sm custom-card">
+                        <div class="card shadow-sm movie-info">
                             <div class="card-body">
                                 <h5 class="card-title"> {{ reservation.movieTitle }}</h5>
                                 <p class="card-text mb-1">
@@ -52,9 +59,9 @@
             <div v-if="oldreservations.length">
                 <div class="row g-3">
                     <div class="col-12" v-for="oldreservation in oldreservations" :key="oldreservation.userId">
-                        <div class="card shadow-sm custom-card">
+                        <div class="card shadow-sm movie-info">
                             <div class="card-body">
-                                <h5 class="card-title">Film ID : {{ oldreservation.movieTitle }}</h5>
+                                <h5 class="card-title">{{ oldreservation.movieTitle }}</h5>
                                 <p class="card-text mb-1">
                                     📅 Date : {{ new Date(oldreservation.reservationDate).toLocaleDateString() }}
                                 </p>
@@ -91,6 +98,7 @@ import type { Reservation } from '../models/types';
 const errorMessage = ref('');
 const reservations = ref<Reservation[]>([]);
 const oldreservations = ref<Reservation[]>([]);
+const userRoleId = ref<number | null>(null);
 
 const dashboardReservation = async () => {
     const api = new ApiCinephoria();
@@ -103,7 +111,9 @@ const dashboardReservation = async () => {
         }
 
         const user = JSON.parse(userData);
-        console.log("Récupération des réservations pour userId:", user.userId);
+        userRoleId.value = user.role?.roleId ?? user.roleId;
+
+        console.log("Récupération des réservations pour roleId:", userRoleId.value);
 
         const response = await api.getReservations({
             userId: user.userId,
@@ -154,7 +164,9 @@ const dashboardOldReservation = async () => {
         console.error("Erreur d'authentification :", error);
     }
 };
-
+function goToAdmin() {
+    router.push('/admin'); // ou l'URL correcte pour l'admin
+}
 function formatHour(isoString: string) {
     const date = new Date(isoString);
     const h = date.getHours().toString().padStart(2, '0');
@@ -162,7 +174,7 @@ function formatHour(isoString: string) {
     return `${h}h${m}`;
 }
 
-onMounted(() => {
+onMounted(async () => {
     dashboardReservation();
     dashboardOldReservation();
 });

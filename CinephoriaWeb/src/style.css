@@ -1,3 +1,19 @@
+:root {
+  --bs-table-bg: hsl(235, 57%, 17%);
+  /* gris très clair */
+}
+
+
+.table> :not(caption)>*>* {
+  background-color: hsl(235, 36%, 46%);
+  color: white;
+}
+
+.table> :not(thead)>*>* {
+  background-color: hsl(235, 57%, 17%);
+  color: white;
+}
+
 /* ---------------------- */
 /* 1. Global Styles       */
 /* ---------------------- */
@@ -46,25 +62,25 @@ main {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  /* background-color: #02385A;*/
 
-  background: radial-gradient(circle at 30% 30%, rgba(0, 255, 200, 0.25), transparent 40%),
-    linear-gradient(135deg, #1e1f2f, #2c3e50);
+  background: radial-gradient(circle at 30% 30%, hsla(235, 59%, 58%, 0.4), transparent 40%),
+    linear-gradient(135deg, #0a0f2c, #1c2350);
   background-repeat: no-repeat;
   background-size: cover;
 }
 
-
 .custom_main {
   background-color: #024566;
-  background: radial-gradient(circle at 30% 30%, rgba(0, 255, 200, 0.25), transparent 40%),
-    linear-gradient(135deg, #1e1f2f, #2c3e50);
+  background: radial-gradient(circle at 30% 30%, hsla(235, 59%, 58%, 0.4), transparent 40%),
+    linear-gradient(135deg, #0a0f2c, #1c2350);
   background-repeat: no-repeat;
   background-size: cover;
 }
 
 .custom_sd_primary {
-  background: radial-gradient(circle at 30% 30%, rgba(0, 255, 200, 0.25), transparent 40%),
-    linear-gradient(135deg, #1e1f2f, #2c3e50);
+  background: radial-gradient(circle at 30% 30%, hsla(235, 59%, 58%, 0.4), transparent 40%),
+    linear-gradient(135deg, #0a0f2c, #1c2350);
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -74,21 +90,22 @@ main {
 /* 4. Boutons Personnalisés */
 /* ---------------------- */
 .custom-btn {
-  background-color: rgb(21, 79, 84) !important;
+  background-color: hsl(235, 60%, 27%) !important;
   border: none;
   color: white !important;
 }
 
 .custom-btn:hover {
-  background-color: rgb(35, 113, 120) !important;
+  background-color: hsl(235, 49%, 42%) !important;
 }
 
 .active-btn {
-  background-color: rgb(35, 113, 120) !important;
-  /* Changer la couleur pour l'état actif */
-  border-color: wheat;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: hsl(235, 49%, 42%) !important;
+  border-color: wheat !important;
+  color: white !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
 }
+
 
 .custom-card {
   background-color: rgb(21, 79, 84) !important;
@@ -131,7 +148,6 @@ ul li a {
   border-radius: 8px;
   display: block;
   margin-bottom: 8px;
-  cursor: pointer;
 }
 
 .custom-container {
@@ -233,7 +249,7 @@ ul li a {
   margin: 5px 0;
 }
 
-.card {
+.pointer {
   cursor: pointer;
 }
 
@@ -286,11 +302,48 @@ ul li a {
 
 /* Pour le menu déroulant */
 .form-select option {
-  background-color: rgb(21, 79, 84);
+  background-color: hsl(235, 60%, 21%);
   color: wheat;
 }
 
 .modal-content {
-  background-color: rgb(21, 79, 84);
+  background-color: hsl(235, 60%, 21%);
   border: 2px solid white
+}
+
+.toast-message {
+  position: fixed;
+  /* Toujours visible à l’écran */
+  bottom: 20px;
+  /* 20px du bas */
+  right: 20px;
+  /* 20px de la droite */
+  background-color: #333;
+  /* Fond sombre */
+  color: #fff;
+  /* Texte blanc */
+  padding: 12px 20px;
+  /* Un peu d’espace à l’intérieur */
+  border-radius: 8px;
+  /* Bords arrondis */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  font-size: 16px;
+  z-index: 1000;
+  /* Au-dessus de tout */
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+  cursor: default;
+  user-select: none;
+  max-width: 300px;
+  word-wrap: break-word;
+}
+
+.toast-message.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.scrollable-body {
+  max-height: 60vh;
+  overflow-y: auto;
 }
