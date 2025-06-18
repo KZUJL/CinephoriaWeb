@@ -10,8 +10,10 @@
         </div>
 
         <MovieManagement v-if="currentSection === 'films'" />
+        <ShowTimesManagement v-if="currentSection === 'seances'" />
         <RoomManagement v-if="currentSection === 'salles'" />
         <EmployeeCreation v-if="currentSection === 'employes'" />
+        <PasswordManagement v-if="currentSection === 'password'" />
         <ReservationOverview v-if="currentSection === 'reservations'" />
     </div>
 </template>
@@ -19,16 +21,20 @@
 <script setup>
 import { ref } from 'vue'
 import MovieManagement from './admin/MovieManagement.vue'
+import ShowTimesManagement from './admin/ShowTimeManagement.vue'
 import RoomManagement from './admin/RoomManagement.vue'
 import EmployeeCreation from './admin/EmployeeManagement.vue'
+import PasswordManagement from './admin/PasswordManagement.vue'
 import ReservationOverview from './admin/ReservationOverView.vue'
 
 const currentSection = ref('films')
 
 const sections = [
-    { id: 'films', label: 'Gestion des Films' },
-    { id: 'salles', label: 'Gestion des Salles' },
-    { id: 'employes', label: 'Création Compte Employé' },
+    { id: 'films', label: 'Gestion des films' },
+    { id: 'seances', label: 'Gestion des séances' },
+    { id: 'salles', label: 'Gestion des salles' },
+    { id: 'employes', label: 'Création compte employé' },
+    { id: 'password', label: 'Réinitialisation du mot de passe' },
     { id: 'reservations', label: 'Réservations (7 jours)' },
 ]
 </script>

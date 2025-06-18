@@ -1,6 +1,6 @@
 <template>
     <div class="card movie-info mb-3 p-3">
-        <h2>Création Compte Employé</h2>
+        <h2>Création compte employé</h2>
         <form @submit.prevent="handleRegister">
             <div class="mb-3">
                 <label for="email" class="form-label">E-mail</label>
@@ -29,7 +29,6 @@
                     <option :value="2">Employé</option>
                 </select>
             </div>
-
             <div class="mb-3">
                 <label for="password" class="form-label">Mot de passe</label>
                 <input v-model="password" type="password" class="form-control" id="password" placeholder="Mot de passe"
@@ -51,10 +50,7 @@ import ApiCinephoria from '../../services/apiCinephoria';
 import CreateAccountModal from '../modal/CreateAccountModal.vue';
 import Swal from 'sweetalert2';
 
-// import ReservationChart from './ReservationChart.vue';
 const api = new ApiCinephoria();
-
-
 const firstName = ref('')
 const lastName = ref('')
 const email = ref('')
@@ -103,8 +99,6 @@ const handleRegister = async () => {
         email.value = '';
         password.value = '';
         username.value = '';
-
-        // showSuccessModal();
 
         Swal.fire({
             icon: 'success',

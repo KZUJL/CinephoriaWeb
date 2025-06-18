@@ -42,7 +42,7 @@ export interface Seance {
     movieTimesId: number;
     movieId: number;
     cinemaId: number;
-    day: string;
+    day: Date;
     startTime: string;
     endTime: string;
     price: number;
@@ -121,4 +121,18 @@ export interface Room {
   }[];
 }
 
- 
+export interface RoomDto {
+  cinemaId: number;
+  name: string;
+  quality: string;
+  seatsNumber: number;
+}
+export interface SeatDtoInput {
+  name: string;
+  type: string;
+  rowLocation: number;
+  columnLocation: number;
+}
+export interface SeatDto extends SeatDtoInput {
+  roomId: number;
+}

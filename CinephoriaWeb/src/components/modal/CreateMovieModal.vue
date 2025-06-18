@@ -24,7 +24,9 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Durée</label>
-                            <input type="text" class="form-control" v-model="movie.duration" />
+                            <input type="text" class="form-control" v-model="movie.duration" placeholder="hh:mm:ss"
+                                pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$" />
+                            <small class="text-muted">Format : hh:mm:ss</small>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Date de sortie</label>

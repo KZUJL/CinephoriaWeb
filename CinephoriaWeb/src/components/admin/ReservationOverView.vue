@@ -2,12 +2,11 @@
     <div class="card movie-info mb-3 p-3">
         <h2>Visualisation des Réservations (7 prochains jours)</h2>
         <p>Voir les réservations prévues entre aujourd’hui et les 7 prochains jours.</p>
-
         <table v-if="reservationCounts.length" class="table table-striped">
             <thead>
                 <tr>
                     <th>Film</th>
-                    <th>Nombre de Réservations</th>
+                    <th>Nombre de réservations</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,9 +36,7 @@
                     </tr>
                 </template>
             </tbody>
-
         </table>
-
         <div v-else>Aucune réservation prévue sur les 7 prochains jours.</div>
     </div>
 </template>
@@ -54,8 +51,6 @@ const api = new ApiCinephoria();
 const movies = ref<Film[]>([]);
 const expandedMovieId = ref<number | null>(null);
 
-
-
 function toggleExpand(movieId: number) {
     if (expandedMovieId.value === movieId) {
         expandedMovieId.value = null;
@@ -63,7 +58,6 @@ function toggleExpand(movieId: number) {
         expandedMovieId.value = movieId;
     }
 }
-
 // Fonction pour compter les réservations par cinéma pour un film donné
 function getReservationCountByCinema(movieId: number): Record<string, number> {
     const filtered = reservations.value.filter(r => r.movieId === movieId);
@@ -86,7 +80,6 @@ const fetchMovies = async () => {
         console.error('Erreur lors de la récupération des films:', error);
     }
 };
-
 
 const reservations = ref<Reservation[]>([]);
 const reservationCounts = ref<{ movieId: number; title: string; count: number }[]>([]);
@@ -130,10 +123,8 @@ const fetchReservationsNext7Days = async () => {
         console.error("Erreur lors du chargement des réservations :", err);
     }
 };
-
 onMounted(async () => {
     await fetchMovies();
     await fetchReservationsNext7Days();
 })
-
 </script>

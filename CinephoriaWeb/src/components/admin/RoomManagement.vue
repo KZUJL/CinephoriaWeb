@@ -1,9 +1,9 @@
 <template>
     <div class="card movie-info mb-3 p-3">
         <div class="d-flex justify-content-between align-items-center mb-3 p-3 py-1">
-            <h2 class="mb-0">Gestion des Salles</h2>
+            <h2 class="mb-0">Gestion des salles</h2>
             <div>
-                <button class="btn btn-success">Ajouter</button>
+                <button class="btn btn-success" @click="onCreateRoomClick">Ajouter</button>
             </div>
         </div>
         <table v-if="rooms.length" class="table ">
@@ -25,7 +25,7 @@
                         <button class="btn btn-primary btn-sm me-2" @click="onEditRoomClick">
                             Modifier
                         </button>
-                        <button class="btn btn-danger btn-sm">
+                        <button class="btn btn-danger btn-sm" @click="onDeleteRoomClick">
                             Supprimer
                         </button>
                     </td>
@@ -35,15 +35,17 @@
         </table>
     </div>
     <EditRoomModal :model-value="isEditRoomModalOpen" :selected-movie="selectedRoom" @save="handleEditRoomSave" />
+    <CreateRoomModal v-model="isCreateRoomModalOpen" @save="handleSaveRoom" />
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import ApiCinephoria from '../../services/apiCinephoria';
-import type { Room } from '../../models/types';
+import type { Room, SeatDto, SeatDtoInput } from '../../models/types';
 import { Modal } from 'bootstrap';
 import Swal from 'sweetalert2';
 import EditRoomModal from '../modal/EditRoomModal.vue';
+import CreateRoomModal from '../modal/CreateRoomModal.vue';
 
 // import ReservationChart from './ReservationChart.vue';
 const api = new ApiCinephoria();
@@ -51,8 +53,51 @@ const rooms = ref<Room[]>([]);
 const selectedMovieId = ref<number | null>(null);
 const isEditModalOpen = ref(false);
 const isEditRoomModalOpen = ref(false);
+const isCreateRoomModalOpen = ref(false);
 const selectedRoom = ref<Room | null>(null);
 
+function onCreateRoomClick() {
+    isCreateRoomModalOpen.value = true;
+
+    const modalElement = document.getElementById('createRoomModal');
+    if (modalElement) {
+        const modal = new Modal(modalElement);
+        modal.show();
+    }
+}
+async function handleSaveRoom(roomDto: Room & { seats: SeatDtoInput[] }) {
+    try {
+        // POST la salle (sans les sièges)
+        console.log("Objet Room envoyé :", roomDto);
+        const createdRoom = await api.postRoom(roomDto);
+
+        // Récupère l'id de la salle créée
+        const roomId = createdRoom.roomId ?? createdRoom.id;
+        const seatsWithRoomId: SeatDto[] = roomDto.seats.map(seat => ({
+            ...seat,
+            roomId
+        }));
+        // POST les sièges
+        for (const seat of seatsWithRoomId) {
+            await api.postSeat(seat);
+        }
+        fetchRooms();
+        Swal.fire({
+            icon: 'success',
+            title: 'Succès',
+            text: 'La salle et les sièges ont bien été ajoutés.',
+            timer: 2000,
+            showConfirmButton: false,
+        });
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: "L'enregistrement a échoué.",
+        });
+        console.error('Erreur lors de l’enregistrement :', error);
+    }
+}
 async function onEditRoomClick() {
     if (selectedMovieId.value === null) return;
 
@@ -73,6 +118,48 @@ async function onEditRoomClick() {
         }
     } catch (error) {
         console.error("Erreur lors de la récupération de la salle :", error);
+    }
+}
+async function onDeleteRoomClick() {
+    if (selectedMovieId.value === null) return;
+
+    const roomId = selectedMovieId.value;
+
+    const result = await Swal.fire({
+        title: 'Êtes-vous sûr ?',
+        text: "Cette action supprimera la salle et tous ses sièges.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Oui, supprimer',
+        cancelButtonText: 'Annuler',
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+        // Supprimer tous les sièges de la salle
+        await api.deleteSeat(roomId);
+        // Supprimer la salle
+        await api.deleteRoom(roomId);
+
+        // Mettre à jour la liste locale
+        rooms.value = rooms.value.filter(r => r.roomId !== roomId);
+        selectedMovieId.value = null;
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Succès',
+            text: 'La salle a bien été supprimée.',
+            timer: 2000,
+            showConfirmButton: false,
+        });
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: 'La suppression a échoué.',
+        });
+        console.error('Erreur lors de la suppression de la salle :', error);
     }
 }
 async function handleEditRoomSave({ updated, original }: { updated: Room; original: Room }) {
@@ -112,7 +199,8 @@ async function handleEditRoomSave({ updated, original }: { updated: Room; origin
 
     try {
         if (doRoomUpdate) {
-            await api.putRoom(updated.roomId, updated);
+            const roomToUpdate = { ...updated, cinema: undefined, seats: undefined };
+            await api.putRoom(updated.roomId, roomToUpdate);
         }
 
         if (doSeatsUpdate) {
@@ -141,12 +229,9 @@ async function handleEditRoomSave({ updated, original }: { updated: Room; origin
             text: 'La modification a échoué.',
         });
     }
-
     isEditModalOpen.value = false;
     isEditRoomModalOpen.value = false;
 }
-
-
 
 function selectMovie(movieId: number) {
     selectedMovieId.value = movieId;

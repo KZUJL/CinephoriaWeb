@@ -1,17 +1,13 @@
 <template>
     <div class="card movie-info mb-3 p-3">
         <div v-show="currentSection === 'films'" class="card movie-info mb-3 p-3">
-
             <div class="d-flex justify-content-between align-items-center mb-3 p-3 py-1">
-                <h2 class="mb-0">Gestion des Films</h2>
+                <h2 class="mb-0">Gestion des films</h2>
                 <div>
                     <button class="btn btn-success" @click="onAddClick">Ajouter</button>
-
                 </div>
             </div>
             <div v-if="message" class="toast-message">{{ message }}</div>
-
-
             <table v-if="movies.length" class="table ">
                 <thead>
                     <tr>
@@ -20,14 +16,11 @@
                         <th>Durée</th>
                         <th>Date de sortie</th>
                         <th>Action(s)</th>
-
-                        <!-- Ajoutez d'autres colonnes si besoin -->
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="movie in movies" :key="movie.movieId" @click="selectMovie(movie.movieId)"
                         :class="{ 'table-active': selectedMovieId === movie.movieId }" style="cursor: pointer;">
-
                         <td>{{ movie.title }}</td>
                         <td>{{ movie.genre }}</td>
                         <td>{{ movie.duration }}</td>
@@ -41,7 +34,6 @@
                             </button>
                         </td>
                         <td v-else></td>
-
                     </tr>
                 </tbody>
             </table>
@@ -62,7 +54,6 @@ import Swal from 'sweetalert2';
 import EditMovieModal from '../modal/EditMovieModal.vue';
 import CreateMovieModal from '../modal/CreateMovieModal.vue';
 
-
 // import ReservationChart from './ReservationChart.vue';
 const api = new ApiCinephoria();
 const movies = ref<Film[]>([]);
@@ -71,6 +62,7 @@ const message = ref('');
 const isEditModalOpen = ref(false);
 const isCreateModalOpen = ref(false);
 const selectedMovie = ref<Film | null>(null);
+
 async function onEditClick() {
     if (selectedMovieId.value === null) return;
 
@@ -95,7 +87,6 @@ async function onEditClick() {
 }
 async function handleEditCreate(createdMovie: Film) {
     await api.createMovie(createdMovie).then(() => {
-        // Une fois réussi, affiche la SweetAlert
         Swal.fire({
             icon: 'success',
             title: 'Succès',
@@ -103,7 +94,6 @@ async function handleEditCreate(createdMovie: Film) {
             timer: 2000,
             showConfirmButton: false,
         });
-
         // Fermer la modale
         isEditModalOpen.value = false;
         // Mettre à jour la liste des films, etc...
@@ -139,7 +129,6 @@ async function handleEditSave(updatedMovie: Film) {
             timer: 2000,
             showConfirmButton: false,
         });
-
         // Fermer la modale
         isEditModalOpen.value = false;
         // Mettre à jour la liste des films, etc...
@@ -153,14 +142,9 @@ async function handleEditSave(updatedMovie: Film) {
         });
     });
 }
-
-
 function selectMovie(movieId: number) {
     selectedMovieId.value = movieId;
 }
-
-
-
 
 const formatDate = (input: string | Date): string => {
     const date = typeof input === 'string' ? new Date(input) : input;
@@ -183,10 +167,7 @@ const fetchMovies = async () => {
     }
 };
 
-
-
 const currentSection = ref('films');
-
 
 async function deleteMovieById(id: number) {
     try {
@@ -226,8 +207,6 @@ function onDeleteClick() {
 
 onMounted(async () => {
     await fetchMovies();
-
-
 })
 
 </script>

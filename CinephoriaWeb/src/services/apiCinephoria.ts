@@ -168,6 +168,62 @@ export default class ApiCinephoria {
         return this.fetchMoviesCinema('/api/MovieTimes', filters);
     }
 
+    private updateMovieTimes(endpoint: string, data: object) {
+        console.log(`Updating movie times at ${this.API_URL}${endpoint}`, data);
+        return axios
+            .put(`${this.API_URL}${endpoint}`, data)
+            .then((response) => {
+                console.log(`${endpoint} API PUT response:`, response.data);
+                return response.data;
+            })
+            .catch((error) => {
+                console.error(`Error updating movie times at ${endpoint}:`, error);
+                throw error;
+            });
+    }
+
+    updateMovieTimesById(id: number, movieTimesData: object) {
+        return this.updateMovieTimes(`/api/MovieTimes/${id}`, movieTimesData);
+    }
+
+    /**
+     * Crée une nouvelle séance (MovieTimes) via l'API.
+     * @param {object} movieTimesData - Les données de la séance à créer.
+     * @returns {Promise<any>} Une promesse résolue avec la réponse du serveur.
+     */
+    postMovieTimes(movieTimesData: object) {
+        console.log(`Posting movie times to ${this.API_URL}/api/MovieTimes`, movieTimesData);
+        return axios
+            .post(`${this.API_URL}/api/MovieTimes`, movieTimesData)
+            .then((response) => {
+                console.log(`/api/MovieTimes API POST response:`, response.data);
+                return response.data;
+            })
+            .catch((error) => {
+                console.error(`Error posting movie times to /api/MovieTimes:`, error);
+                throw error;
+            });
+    }
+
+ /**
+     * Supprime une séance (MovieTimes) via l'API.
+     * @param {number} movieTimesId - L'identifiant de la séance à supprimer.
+     * @returns {Promise<any>} Une promesse résolue avec la réponse du serveur.
+     */
+    deleteMovieTimesById(movieTimesId: number) {
+        console.log(`Deleting movie times at ${this.API_URL}/api/MovieTimes/${movieTimesId}`);
+        return axios
+            .delete(`${this.API_URL}/api/MovieTimes/${movieTimesId}`)
+            .then((response) => {
+                console.log(`/api/MovieTimes/${movieTimesId} API DELETE response:`, response.data);
+                return response.data;
+            })
+            .catch((error) => {
+                console.error(`Error deleting movie times at /api/MovieTimes/${movieTimesId}:`, error);
+                throw error;
+            });
+    }
+
 
 
 
@@ -312,10 +368,6 @@ export default class ApiCinephoria {
                 throw error;
             });
     }
-
-
-
-
     /**
     * Méthode générique pour effectuer une requête POST vers un endpoint spécifique.
     * @private
@@ -452,6 +504,24 @@ export default class ApiCinephoria {
                 })
             }
 
+    /**
+     * Méthode pour mettre à jour le mot de passe d'un compte utilisateur.
+     * @param {object} data - Les informations nécessaires à la mise à jour du mot de passe.
+     * @returns {Promise<any>} - La réponse de l'API après la mise à jour.
+     */
+    putPasswordAccount(data: { email: string; newPassword: string }) {
+        return axios
+            .put(`${this.API_URL}/api/Login/update-password`, data)
+            .then((response) => {
+                console.log('Mot de passe mis à jour avec succès :', response.data)
+                return response.data
+            })
+            .catch((error) => {
+                console.error('Erreur lors de la mise à jour du mot de passe :', error)
+                throw error
+            })
+    }
+
 
 
     private fetchReviews(endpoint: string, params: object) {
@@ -527,7 +597,7 @@ export default class ApiCinephoria {
      * @param {object} [filters] - Les filtres à appliquer (roomId).
      * @returns {Promise<any>} Une promesse résolue avec les données des salles.
      */
-    getRooms(filters?: { roomId?: number }) {
+    getRooms(filters?: { roomId?: number, cinemaId?: number }) {
         return this.fetchRooms('/api/Room', filters);
     }
 
@@ -566,6 +636,25 @@ export default class ApiCinephoria {
             })
             .catch((error) => {
                 console.error(`Error updating room at /api/Room/${id}:`, error);
+                throw error;
+            });
+    }
+
+    /**
+     * Supprime une salle via l'API.
+     * @param {number} id - L'identifiant de la salle à supprimer.
+     * @returns {Promise<any>} Une promesse résolue avec la réponse du serveur.
+     */
+    deleteRoom(id: number) {
+        console.log(`Deleting room at ${this.API_URL}/api/Room/${id}`);
+        return axios
+            .delete(`${this.API_URL}/api/Room/${id}`)
+            .then((response) => {
+                console.log(`/api/Room/${id} API DELETE response:`, response.data);
+                return response.data;
+            })
+            .catch((error) => {
+                console.error(`Error deleting room at /api/Room/${id}:`, error);
                 throw error;
             });
     }
