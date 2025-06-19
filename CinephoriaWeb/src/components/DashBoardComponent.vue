@@ -225,10 +225,10 @@ async function handleEditSave(userReviews: Reservation) {
     });
 }
 function goToAdmin() {
-    router.push('/admin'); // ou l'URL correcte pour l'admin
+    router.push('/admin');
 }
 function goToEmployee() {
-    router.push('/employee'); // ou l'URL correcte pour l'admin
+    router.push('/employee');
 }
 function formatHour(isoString: string) {
     const date = new Date(isoString);
