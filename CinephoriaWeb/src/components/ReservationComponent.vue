@@ -10,7 +10,7 @@
         </div>
         <div class="row">
             <div class="col-12 col-lg-2 mb-4" v-for="seance in filteredMovieTimes" :key="seance.movieTimesId">
-                <div class="card h-100 custom-card"
+                <div class="card h-100 movie-info pointer"
                     @click="goToMovieReservation(seance.movie.movieId, seance.cinemaId)">
                     <img :src="seance.movie.poster" :alt="seance.movie.title" :title="seance.movie.title"
                         style="object-fit: cover; height: 300px;">

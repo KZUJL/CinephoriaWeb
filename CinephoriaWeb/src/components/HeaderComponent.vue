@@ -15,7 +15,7 @@
                     Réservation
                 </button>
             </router-link>
-            <input type="search" class="form-control mx-2 mr-3" placeholder="Recherche..." />
+            <!-- <input type="search" class="form-control mx-2 mr-3" placeholder="Recherche..." /> -->
         </div>
         <div class="d-flex align-items-center">
             <template v-if="userName">

@@ -1,14 +1,14 @@
 // Définition des types 
 export interface Film {
-    movieId: number;
+    movieId?: number;
     title: string;
     poster: string; 
-    description: Text;
+    description: string;
     genre :string;
     duration: string; 
     director: string;
     producer: string;
-    cast: Text;
+    cast: string;
     releaseDate: Date;
     availableDate: Date;
     trailer: string;
@@ -16,6 +16,8 @@ export interface Film {
     isfavorite: boolean;
     averageReview?: number;     
     reviews?: Review[];
+    sourcePoster: string;
+    sourceTrailer: string;
 
   }
 
@@ -40,7 +42,7 @@ export interface Seance {
     movieTimesId: number;
     movieId: number;
     cinemaId: number;
-    day: string;
+    day: Date;
     startTime: string;
     endTime: string;
     price: number;
@@ -72,6 +74,7 @@ export interface Seance {
     seatId: number;
     userId: number;
     cinemaId: number;
+    cinemaName: string;
     movieId: number;
     reservationDate: string;
     reservationTime: string;
@@ -93,5 +96,43 @@ export interface Seance {
   comments: string;
   reviewsDate: string;
 }
+export interface Room {
+  roomId: number;
+  cinemaId: number;
+  name: string;
+  quality : string;
+  seatsNumber: number;
+  cinema: {
+    cinemaId: number;
+    name: string;
+    address: string;
+    country: string;
+    city: string;
+    phoneNumber: string;
+  }
+  seats:{
+    locationId: number;    
+    roomId: number;
+    name: string;
+    type: string;
+    rowLocation: number;
+    columnLocation: number;
+    room: string;
+  }[];
+}
 
- 
+export interface RoomDto {
+  cinemaId: number;
+  name: string;
+  quality: string;
+  seatsNumber: number;
+}
+export interface SeatDtoInput {
+  name: string;
+  type: string;
+  rowLocation: number;
+  columnLocation: number;
+}
+export interface SeatDto extends SeatDtoInput {
+  roomId: number;
+}

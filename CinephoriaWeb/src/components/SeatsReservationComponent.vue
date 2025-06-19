@@ -55,17 +55,17 @@
 
             <div class="d-flex justify-content-center p-2">
                 <div class="card text-center " style="width: 20rem;">
-                    <span class="me-4"><strong>{{ selectedSeats &&
-                        selectedSeats.length }} Place réservée(s) / {{ price * (selectedSeats?.length || 0) }}
+                    <button class="btn btn-warning me-4 w-100" :disabled="!selectedSeats.length" @click="reserveSeats">
+                        Réserver
+                    </button>
+                    <span class="me-4  mt-2"><strong>{{ selectedSeats &&
+                        selectedSeats.length }} Place(s) réservée(s) / {{ price * (selectedSeats?.length || 0) }}
                             Euros</strong>
                     </span>
                     <div v-for="seat in selectedSeats" :key="seat.locationId">
                         {{ seat.name }} <span v-if="seat.type">({{ seat.type }})</span>
                     </div>
-                    <button class="btn btn-warning me-4 w-100 mt-2" :disabled="!selectedSeats.length"
-                        @click="reserveSeats">
-                        Réserver
-                    </button>
+
                 </div>
             </div>
         </div>
@@ -74,9 +74,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import ApiCinephoria from '../services/apiCinephoria';
 import type { Seat } from '../models/types';
+import Swal from 'sweetalert2';
 
 // Refs
 const seats = ref<Seat[]>([]);
@@ -92,6 +93,7 @@ const RoomName = ref('')
 const RoomId = ref('')
 
 const route = useRoute();
+const router = useRouter();
 
 // Fonctions
 function toggleSeatSelection(seat: Seat) {
@@ -102,22 +104,34 @@ function toggleSeatSelection(seat: Seat) {
 
 async function reserveSeats() {
     if (selectedSeats.value.length === 0) {
-        alert('Veuillez sélectionner au moins un siège pour réserver.');
+        Swal.fire({
+            icon: 'warning',
+            title: 'Aucune sélection',
+            text: 'Veuillez sélectionner au moins un siège pour réserver.',
+        });
         return;
     }
 
     const selectedSeatIds = selectedSeats.value.map(seat => seat.locationId);
     const api = new ApiCinephoria();
 
-    const movieId = route.params.movieId;
-    const cinemaId = route.params.cinemaId;
-    const reservationDate = new Date(`${movieDay.value}T00:00:00Z`).toISOString();
+    const movieId = Number(route.params.movieId);
+    const cinemaId = Number(route.params.cinemaId);
+
+    // Créer les objets Date à partir de valeurs locales (sans UTC)
+    const reservationDate = `${movieDay.value}T00:00:00`;
     const reservationTime = `${movieDay.value}T${startTime.value}:00`;
+    const userData = localStorage.getItem('user');
+
+
+    const user = JSON.parse(userData);
+    console.log("Récupération des réservations pour userId:", user.userId);
+
 
     try {
         const results = await Promise.all(selectedSeatIds.map(async (seatId) => {
             const reservationData = {
-                userId: 1,
+                userId: user.userId,
                 seatId: seatId.toString(),
                 seatName: seats.value.find(s => s.locationId === seatId)?.name,
                 movieId,
@@ -134,13 +148,28 @@ async function reserveSeats() {
 
         const successfulReservations = results.filter(res => res && res.id);
         if (successfulReservations.length === selectedSeatIds.length) {
-            alert('Réservation de tous les sièges effectuée avec succès !');
-            window.location.href = "/dashboard";
+            Swal.fire({
+                icon: 'success',
+                title: 'Succès',
+                text: 'Réservation de tous les sièges effectuée avec succès !',
+                timer: 2000,
+                showConfirmButton: false,
+            });
+            // Redirection avec le routeur Vue
+            router.push('/dashboard');
             return;
         } else if (successfulReservations.length > 0) {
-            alert(`Réservation partielle réussie : ${successfulReservations.length} sur ${selectedSeatIds.length} sièges.`);
+            Swal.fire({
+                icon: 'warning',
+                title: 'Attention',
+                text: `Réservation partielle réussie : ${successfulReservations.length} sur ${selectedSeatIds.length} sièges.`,
+            });
         } else {
-            alert('La réservation a échoué pour tous les sièges.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: 'La réservation a échoué pour tous les sièges.',
+            });
         }
 
         // Mise à jour des sièges
@@ -155,6 +184,7 @@ async function reserveSeats() {
         alert('Erreur lors de la réservation, veuillez réessayer.');
     }
 }
+
 
 
 async function fetchSeatsByRoomId(roomId: number) {
@@ -178,27 +208,36 @@ async function fetchSeatsByRoomId(roomId: number) {
 
 
 async function fetchReservedSeats() {
+    // Construction d'un objet Date sans le 'Z' (UTC)
+    const localReservationDate = new Date(`${movieDay.value}T00:00:00`);
+    const localReservationTime = new Date(`${movieDay.value}T${startTime.value}:00`);
+
     const reservationData = {
         movieId: Number(route.params.movieId),
         cinemaId: Number(route.params.cinemaId),
-        reservationDate: new Date(`${movieDay.value}T00:00:00Z`).toISOString(),
-        reservationTime: `${movieDay.value}T${startTime.value}:00`,
+        reservationDate: localReservationDate.toISOString(),
+        reservationTime: localReservationTime.toISOString(),
     };
+
     const api = new ApiCinephoria();
     try {
         const reservations = await api.getReservations(reservationData);
-        reservedSeats.value = new Set(reservations.map((reservation: { seatId: number }) => reservation.seatId));
+
+        reservedSeats.value = new Set(
+            reservations.map((reservation: { seatId: number }) => reservation.seatId)
+        );
+
         // Mise à jour des sièges
         seats.value = seats.value.map(seat => ({
             ...seat,
             reserved: reservedSeats.value.has(seat.locationId),
         }));
 
-
     } catch (error) {
         console.error("Erreur lors de la récupération des réservations :", error);
     }
 }
+
 
 
 
@@ -242,10 +281,13 @@ onMounted(async () => {
         cinemaName.value = seance.cinema.name;
         RoomName.value = seance.room.name
         RoomId.value = seance.room.roomId
-        movieDay.value = new Date(seance.day).toISOString().split('T')[0];
+        const date = new Date(seance.day);
+        movieDay.value = date.toLocaleDateString('fr-CA');
         startTime.value = seance.startTime.slice(0, 5);
         endTime.value = seance.endTime.slice(0, 5);
         price.value = seance.price;
+
+        console.log("Jour du film :", movieDay.value);
 
         // Récupérer les réservations pour désactiver les sièges réservés
         await fetchReservedSeats();

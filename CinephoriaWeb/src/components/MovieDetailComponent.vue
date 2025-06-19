@@ -86,8 +86,6 @@
 
                     <p>{{ movieDetails.description }}</p>
                 </div>
-
-
             </div>
             <div>
                 <h5>Avis spectateur</h5>
@@ -126,10 +124,8 @@ import type { Film } from '../models/types';
 import { Modal } from 'bootstrap';
 import TrailerModal from './modal/TrailerModal.vue';
 
-
 const movieDetails = ref<Film | null>(null);
 const route = useRoute();
-
 
 // Fonction pour récupérer les détails du film
 const fetchMovieDetails = async (movieId: number) => {

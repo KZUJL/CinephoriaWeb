@@ -23,9 +23,7 @@ const router = createRouter({
       path: '/movie/:movieId',
       name: 'movieDetail',
       component: () => import('../views/MovieDetailView.vue')
-    }
-    
-    ,
+    },
     {
       path: '/reservation/:movieId/:cinemaId',
       name: 'movieReservation',
@@ -41,25 +39,43 @@ const router = createRouter({
       name: 'login',
       component: () => import('../views/LoginView.vue')
     },
-     {
+    {
       path: '/dashboard',
       name: 'dashboard',
       component: () => import('../views/DashBoardView.vue')
     },
-     {
+    {
       path: '/createaccount',
       name: 'createAccount',
       component: () => import('../views/CreateAccountView.vue')
+    },
+    {
+      path: '/admin',
+      name: 'AdminPage',
+      component: () => import('../views/AdminView.vue'),
+      meta: { requiresAdmin: true }
     }
-    
   ]
-  
 })
+
 router.beforeEach((to, _from, next) => {
-    if (to.path !== '/login') {
-        localStorage.setItem('previousRoute', to.fullPath);
+  // Store previous route except for login
+  if (to.path !== '/login') {
+    localStorage.setItem('previousRoute', to.fullPath);
+  }
+
+  // Admin route guard
+  if (to.meta.requiresAdmin) {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    if (user && (user.role?.roleName === 'admin' || user.role?.roleId === 1)) {
+      next();
+    } else {
+      next('/login');
     }
+  } else {
     next();
+  }
 });
 
 export default router
