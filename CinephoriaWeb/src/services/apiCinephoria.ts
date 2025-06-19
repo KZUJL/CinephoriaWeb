@@ -522,6 +522,29 @@ export default class ApiCinephoria {
             })
     }
 
+    /**
+     * Méthode pour envoyer un e-mail de réinitialisation de mot de passe.
+     * @param {object} email - Les informations nécessaires à l'envoi de l'e-mail (email).
+     * @returns {Promise<any>} - La réponse de l'API après l'envoi.
+     */
+   postSendResetPassword(email: string) {
+    return axios.post(
+        `${this.API_URL}/api/Login/send-reset-password`,
+        JSON.stringify(email), // envoyer la string JSON avec guillemets
+        {
+            headers: { 'Content-Type': 'application/json' } // indiquer que c'est du JSON
+        }
+    )
+    .then(response => {
+        console.log('E-mail de réinitialisation envoyé :', response.data);
+        return response.data;
+    })
+    .catch(error => {
+        console.error('Erreur lors de l\'envoi de l\'e-mail de réinitialisation :', error);
+        throw error;
+    });
+}
+
 
 
     private fetchReviews(endpoint: string, params: object) {

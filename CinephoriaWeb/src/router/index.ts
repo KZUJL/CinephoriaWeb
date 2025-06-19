@@ -61,6 +61,12 @@ const router = createRouter({
       component: () => import('../views/EmployeeView.vue'),
       meta: { requiresEmployee: true }
     }
+    ,
+    {
+      path: '/change-password',
+      name: 'ChangePassword',
+      component: () => import('../views/ChangePassword.vue')      
+    }
   ]
 })
 
@@ -95,5 +101,6 @@ router.beforeEach((to, _from, next) => {
     next();
   }
 });
+
 
 export default router
