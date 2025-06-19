@@ -548,6 +548,25 @@ export default class ApiCinephoria {
     }
 
     /**
+     * Crée un nouvel avis via l'API.
+     * @param {object} reviewData - Les données de l'avis à créer.
+     * @returns {Promise<any>} Une promesse résolue avec la réponse du serveur.
+     */
+    postReviews(reviewData: object) {
+        console.log(`Posting review to ${this.API_URL}/api/Reviews`, reviewData);
+        return axios
+            .post(`${this.API_URL}/api/Reviews`, reviewData)
+            .then((response) => {
+                console.log(`/api/Reviews API POST response:`, response.data);
+                return response.data;
+            })
+            .catch((error) => {
+                console.error(`Error posting review to /api/Reviews:`, error);
+                throw error;
+            });
+    }
+
+    /**
      * Récupère les avis validés avec des filtres via l'API.
      * @param {object} filters - Les filtres à appliquer (userId, movieId).
      * @returns {Promise<any>} Une promesse résolue avec les avis validés correspondant aux filtres.
