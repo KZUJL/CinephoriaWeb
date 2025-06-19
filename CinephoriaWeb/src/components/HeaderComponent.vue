@@ -21,7 +21,7 @@
             <template v-if="userName">
                 <span class="text-white me-3">Bienvenue, {{ userName }}</span>
             </template>
-            <button class="btn btn-warning">Contactez-nous</button>
+            <button class="btn btn-warning" @click="$router.push('/contact')">Contactez-nous</button>
 
             <button class="btn custom-btn mx-2 d-flex align-items-center"
                 :class="{ 'active-btn': isActiveRoute(userName ? '/dashboard' : '/login') }"
