@@ -547,6 +547,53 @@ export default class ApiCinephoria {
         return this.fetchReviews('/api/Reviews', filters);
     }
 
+    /**
+     * Récupère les avis validés avec des filtres via l'API.
+     * @param {object} filters - Les filtres à appliquer (userId, movieId).
+     * @returns {Promise<any>} Une promesse résolue avec les avis validés correspondant aux filtres.
+     */
+    getValidatedReviews(filters: { userId?: number, movieId?: number }) {
+        return this.fetchReviews('/api/Reviews/validated', filters);
+    }
+
+        /**
+         * Valide un avis via l'API.
+         * @param {string} id - L'identifiant de l'avis à valider.
+         * @returns {Promise<any>} Une promesse résolue avec la réponse du serveur.
+         */
+        validationReviews(id: string) {
+            console.log(`Validating review at ${this.API_URL}/api/Reviews/validate/${id}`);
+            return axios
+                .put(`${this.API_URL}/api/Reviews/validate/${id}`)
+                .then((response) => {
+                    console.log(`/api/Reviews/validate/${id} API POST response:`, response.data);
+                    return response.data;
+                })
+                .catch((error) => {
+                    console.error(`Error validating review at /api/Reviews/validate/${id}:`, error);
+                    throw error;
+                });
+        }
+
+        /**
+         * Supprime un avis via l'API.
+         * @param {string} id - L'identifiant de l'avis à supprimer.
+         * @returns {Promise<any>} Une promesse résolue avec la réponse du serveur.
+         */
+        deleteReviews(id: string) {
+            console.log(`Deleting review at ${this.API_URL}/api/Reviews/${id}`);
+            return axios
+                .delete(`${this.API_URL}/api/Reviews/${id}`)
+                .then((response) => {
+                    console.log(`/api/Reviews/${id} API DELETE response:`, response.data);
+                    return response.data;
+                })
+                .catch((error) => {
+                    console.error(`Error deleting review at /api/Reviews/${id}:`, error);
+                    throw error;
+                });
+        }
+
     private fetchReviewsAverage(endpoint: string) {
         console.log(`Getting average reviews data from ${this.API_URL}${endpoint}`);
         return axios

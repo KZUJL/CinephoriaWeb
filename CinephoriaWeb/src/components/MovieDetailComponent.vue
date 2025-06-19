@@ -162,7 +162,7 @@ const fetchReviewsAverage = async (movieId: number) => {
 const fetchReviews = async (movieId: number) => {
     const api = new ApiCinephoria();
     try {
-        const reviews = await api.getReviews({ movieId });
+        const reviews = await api.getValidatedReviews({ movieId });
         if (reviews && movieDetails.value) {
             movieDetails.value.reviews = reviews;
         }

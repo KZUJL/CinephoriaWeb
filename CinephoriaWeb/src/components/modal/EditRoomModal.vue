@@ -35,7 +35,6 @@
                             <input type="text" class="form-control" :value="room.seatsNumber" readonly />
                         </div>
                         <div class="mb-3">
-
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -58,10 +57,7 @@
 
                                 </tbody>
                             </table>
-
                         </div>
-
-
                         <!-- Ajoute d'autres champs selon le modèle -->
                     </form>
                 </div>
@@ -76,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, defineProps, defineEmits } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import type { Room } from '../../models/types';
 import * as bootstrap from 'bootstrap'
 import ApiCinephoria from '../../services/apiCinephoria';

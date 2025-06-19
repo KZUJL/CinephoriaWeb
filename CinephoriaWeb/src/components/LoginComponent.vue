@@ -17,7 +17,7 @@
                     <button type="submit" class="btn btn-primary w-100">Se connecter</button>
                 </form>
                 <div class="text-center mt-3">
-                    <small>Vous n'avez pas de compte ? <a href="/register">Inscrivez-vous</a></small>
+                    <small>Vous n'avez pas de compte ? <a href="/createaccount">Inscrivez-vous</a></small>
                 </div>
                 <div v-if="errorMessage" class="alert alert-danger mt-3" role="alert">
                     {{ errorMessage }}

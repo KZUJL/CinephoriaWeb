@@ -82,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, defineProps, onMounted, ref } from 'vue'
+import { watch, onMounted, ref } from 'vue'
 import * as bootstrap from 'bootstrap'
 import ApiCinephoria from '../../services/apiCinephoria';
 import type { Cinema, Room, RoomDto, SeatDtoInput } from '../../models/types';

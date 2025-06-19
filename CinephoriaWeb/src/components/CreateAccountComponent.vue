@@ -1,6 +1,6 @@
 <template>
     <div class="container mt-5" style="max-width: 500px; padding-bottom: 3rem;">
-        <div class="card custom-card">
+        <div class="card movie-info">
             <div class="card-body">
                 <h3 class="card-title text-center mb-4">Inscription</h3>
                 <form @submit.prevent="handleRegister">

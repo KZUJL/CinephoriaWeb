@@ -9,6 +9,9 @@
                 <div v-if="userRoleId === 1">
                     <button class="btn btn-primary" @click="goToAdmin">Administration</button>
                 </div>
+                <div v-if="userRoleId === 2">
+                    <button class="btn btn-primary" @click="goToEmployee">Intranet</button>
+                </div>
             </div>
         </div>
 
@@ -166,6 +169,9 @@ const dashboardOldReservation = async () => {
 };
 function goToAdmin() {
     router.push('/admin'); // ou l'URL correcte pour l'admin
+}
+function goToEmployee() {
+    router.push('/employee'); // ou l'URL correcte pour l'admin
 }
 function formatHour(isoString: string) {
     const date = new Date(isoString);

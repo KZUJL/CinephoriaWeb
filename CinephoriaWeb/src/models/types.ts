@@ -95,6 +95,7 @@ export interface Seance {
   reviews: number;
   comments: string;
   reviewsDate: string;
+  reviewsValidation: boolean
 }
 export interface Room {
   roomId: number;

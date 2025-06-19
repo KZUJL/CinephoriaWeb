@@ -1,6 +1,5 @@
 <!-- components/modal/EditMovieModal.vue -->
 <template>
-
     <div class="modal fade" id="editMovieModal" tabindex="-1" aria-labelledby="editMovieModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -84,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, defineProps, defineEmits } from 'vue';
+import { ref, computed, watch } from 'vue';
 import type { Film } from '../../models/types';
 import * as bootstrap from 'bootstrap'
 
