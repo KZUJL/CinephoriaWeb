@@ -11,7 +11,7 @@
                     <option v-for="genre in genres" :key="genre" :value="genre">{{ genre }}</option>
                 </select>
                 <select id="cinemaSelect" class="form-select" v-model="selectedCinemaId" style="max-width: 220px;">
-                    <option value="">Tous les Cinemas</option>
+                    <option value="">Tous les cinemas</option>
                     <option v-for="cinema in cinemas" :key="cinema.cinemaId" :value="cinema.cinemaId">
                         {{ cinema.name }}
                     </option>

@@ -50,15 +50,11 @@
                 Aucune réservation en cours.
             </div>
         </div>
-
-
         <div class="mes-reservations container py-3">
             <h2 class="mb-4">Anciennes réservations</h2>
-
             <div v-if="errorMessage" class="alert alert-danger">
                 {{ errorMessage }}
             </div>
-
             <div v-if="oldreservations.length">
                 <div class="row g-3">
                     <div class="col-12" v-for="oldreservation in oldreservations" :key="oldreservation.userId">
@@ -77,35 +73,73 @@
                                 <p class="card-text mb-0">
                                     💺 {{ oldreservation.seatName }}
                                 </p>
+                                <span
+                                    v-if="reviews.some(r => r.userId === oldreservation.userId && r.movieId === oldreservation.movieId)"
+                                    class="badge" :class="{
+                                        'text-bg-success': reviews.find(r => r.userId === oldreservation.userId && r.movieId === oldreservation.movieId && r.reviewsValidation === true),
+                                        'text-bg-info': reviews.find(r => r.userId === oldreservation.userId && r.movieId === oldreservation.movieId && r.reviewsValidation !== true)
+                                    }">
+                                    {{
+                                        reviews.find(r => r.userId === oldreservation.userId && r.movieId ===
+                                            oldreservation.movieId && r.reviewsValidation === true)
+                                            ? 'Avis déposé et validé'
+                                            : 'Avis déposé en cours de validation'
+                                    }}
+                                </span>
+                                <button v-else-if="userRoleId === 3" class="btn btn-success mt-2"
+                                    @click="openReviewModal(oldreservation)">
+                                    Laisser un avis
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
             <div v-else class="alert alert-info">
                 Aucune ancienne réservation.
             </div>
         </div>
-
     </div>
+    <CreateUserReviews v-if="showReviewModal" :reservation="selectedReservation" @close="showReviewModal = false"
+        @submitted="handleEditSave" />
 </template>
-
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import ApiCinephoria from '../services/apiCinephoria';
-import type { Reservation } from '../models/types';
+import type { Reservation, Review } from '../models/types';
+import CreateUserReviews from './modal/CreateUserReviews.vue';
+import Swal from 'sweetalert2';
 
+const selectedReservation = ref<Reservation | null>(null);
+const showReviewModal = ref(false);
+
+function openReviewModal(reservation: Reservation) {
+    selectedReservation.value = reservation;
+    showReviewModal.value = true;
+}
 const errorMessage = ref('');
 const reservations = ref<Reservation[]>([]);
 const oldreservations = ref<Reservation[]>([]);
 const userRoleId = ref<number | null>(null);
+const api = new ApiCinephoria();
+const reviews = ref<Review[]>([]);
+
+const fetchReviews = async () => {
+    try {
+        const review = await api.getReviews({});
+        if (Array.isArray(review)) {
+            reviews.value = review; // on stocke tout
+        } else {
+            console.error("Erreur : la réponse de l'API n'est pas un tableau");
+        }
+    } catch (error) {
+        console.error('Erreur lors de la récupération des avis :', error);
+    }
+};
 
 const dashboardReservation = async () => {
-    const api = new ApiCinephoria();
-
     try {
         const userData = localStorage.getItem('user');
         if (!userData) {
@@ -141,18 +175,14 @@ const dashboardReservation = async () => {
 };
 
 const dashboardOldReservation = async () => {
-    const api = new ApiCinephoria();
-
     try {
         const userData = localStorage.getItem('user');
         if (!userData) {
             errorMessage.value = "Utilisateur non connecté.";
             return;
         }
-
         const user = JSON.parse(userData);
         console.log("Récupération des réservations pour userId:", user.userId);
-
         const response = await api.getReservations({
             userId: user.userId,
         });
@@ -167,6 +197,33 @@ const dashboardOldReservation = async () => {
         console.error("Erreur d'authentification :", error);
     }
 };
+
+async function handleEditSave(userReviews: Reservation) {
+    // Logique pour sauvegarder les données modifiées, ex:
+    console.log('Avis ajouté :', userReviews);
+    await api.postReviews(userReviews).then(() => {
+        // Une fois réussi, affiche la SweetAlert
+        Swal.fire({
+            icon: 'success',
+            title: 'Succès',
+            text: 'L\'avis a bien été ajouté.',
+            timer: 2000,
+            showConfirmButton: false,
+        });
+        // Fermer la modale
+        // isEditModalOpen.value = false;
+        // Mettre à jour la liste des films, etc...
+        dashboardReservation();
+        dashboardOldReservation();
+
+    }).catch(() => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: 'La modification a échoué.',
+        });
+    });
+}
 function goToAdmin() {
     router.push('/admin'); // ou l'URL correcte pour l'admin
 }
@@ -183,6 +240,7 @@ function formatHour(isoString: string) {
 onMounted(async () => {
     dashboardReservation();
     dashboardOldReservation();
+    await fetchReviews();
 });
 
 const router = useRouter();
@@ -193,5 +251,4 @@ function logout() {
         window.location.reload();
     });
 }
-
 </script>
