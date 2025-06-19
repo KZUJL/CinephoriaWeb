@@ -1,6 +1,6 @@
 <template>
     <div class="card movie-info mb-3 p-3">
-        <div v-show="currentSection === 'films'" class="card movie-info mb-3 p-3">
+        <div v-show="currentSection === 'films'">
             <div class="d-flex justify-content-between align-items-center mb-3 p-3 py-1">
                 <h2 class="mb-0">Gestion des films</h2>
                 <div>

@@ -1,9 +1,18 @@
 <template>
     <div class="card movie-info mb-3 p-3">
-        <div v-show="currentSection === 'films'" class="card movie-info mb-3 p-3">
+        <div v-show="currentSection === 'films'">
             <div class="d-flex justify-content-between align-items-center mb-3 p-3 py-1">
-                <h2 class="mb-0">Gestion des séances</h2>
-                <div>
+
+                <div class="me-3 d-flex align-items-center">
+                    <h2 class="mb-0 me-3">Gestion des séances</h2>
+                    <select class="form-select me-2" style="width: auto;" v-model="selectedCinemaId">
+                        <option value="">Tous les cinémas</option>
+                        <option v-for="cinema in cinemas" :key="cinema.cinemaId" :value="cinema.cinemaId">
+                            {{ cinema.name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="d-flex align-items-center">
                     <button class="btn btn-success" @click="onAddClick">Ajouter</button>
                 </div>
             </div>
@@ -20,7 +29,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="seance in seances" :key="seance.movieId" @click="selectMovie(seance.movieTimesId)"
+                    <tr v-for="seance in filteredSeances" :key="seance.movieTimesId"
+                        @click="selectMovie(seance.movieTimesId)"
                         :class="{ 'table-active': selectedMovieTimesId === seance.movieTimesId }"
                         style="cursor: pointer;">
                         <td>{{ getCinemasTitle(seance.cinemaId) }}</td>
@@ -49,7 +59,7 @@
         :cinemas="cinemas" @create="handleEditCreate" @update:model-value="createShowTimesModal = $event" />
 </template>
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import ApiCinephoria from '../../services/apiCinephoria';
 import type { Seance, Film, Cinema } from '../../models/types';
 import { Modal } from 'bootstrap';
@@ -66,6 +76,15 @@ const message = ref('');
 const isEditModalOpen = ref(false);
 const createShowTimesModal = ref(false);
 const selectedMovie = ref<Seance | null>(null);
+const selectedCinemaId = ref<number | ''>('');
+
+const filteredSeances = computed(() => {
+    if (!selectedCinemaId.value) {
+        return seances.value;
+    }
+    return seances.value.filter(seance => seance.cinemaId === Number(selectedCinemaId.value));
+});
+
 
 async function onEditClick() {
     if (selectedMovieTimesId.value === null) return;
@@ -267,7 +286,9 @@ function onDeleteClick() {
         }
     });
 }
-
+watch(selectedCinemaId, () => {
+    selectedMovieTimesId.value = null;
+});
 onMounted(async () => {
     await fetchMoviesTimes();
     await fetchMovies()

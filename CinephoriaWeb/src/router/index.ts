@@ -54,6 +54,12 @@ const router = createRouter({
       name: 'AdminPage',
       component: () => import('../views/AdminView.vue'),
       meta: { requiresAdmin: true }
+    },
+    {
+      path: '/employee',
+      name: 'EmployePage',
+      component: () => import('../views/EmployeeView.vue'),
+      meta: { requiresEmployee: true }
     }
   ]
 })
@@ -69,6 +75,18 @@ router.beforeEach((to, _from, next) => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     
     if (user && (user.role?.roleName === 'admin' || user.role?.roleId === 1)) {
+      next();
+    } else {
+      next('/login');
+    }
+  } else {
+    next();
+  }
+
+  if (to.meta.requiresEmployee) {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    if (user && (user.role?.roleName === 'employee' || user.role?.roleId === 2)) {
       next();
     } else {
       next('/login');

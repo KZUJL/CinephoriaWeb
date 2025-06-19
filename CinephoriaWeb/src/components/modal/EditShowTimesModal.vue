@@ -59,7 +59,7 @@
 
 </template>
 <script setup lang="ts">
-import { ref, watch, computed, defineProps, defineEmits } from 'vue';
+import { ref, watch, computed } from 'vue';
 import type { Seance, Film, Cinema, Room } from '../../models/types';
 import * as bootstrap from 'bootstrap'
 import ApiCinephoria from '../../services/apiCinephoria';

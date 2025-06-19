@@ -112,11 +112,17 @@ const filteredMovieTimes = computed(() => {
 
     const cinemaIdNum = Number(selectedCinemaId.value);
 
-    // Filtrer les séances du cinéma sélectionné 
-    return movieTimes.value.filter(session =>
-        session.cinemaId === cinemaIdNum && Wednesday >= new Date(session.day) &&
-        new Date(session.day) > now
-    );
+    // Filtrer les séances du cinéma sélectionné et ne garder qu'une séance par film
+    const seenMovies = new Set<number>();
+    return movieTimes.value.filter(session => {
+        const isValid = session.cinemaId === cinemaIdNum &&
+            Wednesday >= new Date(session.day) &&
+            new Date(session.day) > now;
+        if (!isValid) return false;
+        if (seenMovies.has(session.movie.movieId)) return false;
+        seenMovies.add(session.movie.movieId);
+        return true;
+    });
 });
 
 const fetchReviews = async (movieId: number) => {
