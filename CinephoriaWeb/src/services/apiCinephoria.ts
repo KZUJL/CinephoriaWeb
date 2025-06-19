@@ -747,6 +747,24 @@ export default class ApiCinephoria {
                 throw error;
             });
     }
+    /**
+     * Envoie un message de contact via l'API.
+     * @param {object} contactData - Les données du formulaire de contact.
+     * @returns {Promise<any>} Une promesse résolue avec la réponse du serveur.
+     */
+    postContact(contactData: { email: string; subject: string; message: string; username: string }) {
+        console.log(`Posting contact message to ${this.API_URL}/api/Contact/contact`, contactData);
+        return axios
+            .post(`${this.API_URL}/api/Contact/contact`, contactData)
+            .then((response) => {
+                console.log(`/api/Contact/contact API POST response:`, response.data);
+                return response.data;
+            })
+            .catch((error) => {
+                console.error(`Error posting contact message to /api/Contact/contact:`, error);
+                throw error;
+            });
+    }
 
 }
 
