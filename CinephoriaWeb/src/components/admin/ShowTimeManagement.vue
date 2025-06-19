@@ -28,7 +28,6 @@
                         <td>{{ seance.day ? formatDate(seance.day) : '' }}</td>
                         <td>{{ seance.startTime }}</td>
                         <td>{{ seance.room.name }}</td>
-
                         <td v-if="selectedMovieTimesId === seance.movieTimesId">
                             <button class="btn btn-primary btn-sm me-2" @click="onEditClick">
                                 Modifier
@@ -57,9 +56,7 @@ import { Modal } from 'bootstrap';
 import Swal from 'sweetalert2';
 import EditShowTimesModal from '../modal/EditShowTimesModal.vue';
 import CreateMovieTimesModal from '../modal/CreateMovieTimesModal.vue';
-// import { server } from 'typescript';
 
-// import ReservationChart from './ReservationChart.vue';
 const api = new ApiCinephoria();
 const seances = ref<Seance[]>([]);
 const film = ref<Film[]>([]);
@@ -69,8 +66,6 @@ const message = ref('');
 const isEditModalOpen = ref(false);
 const createShowTimesModal = ref(false);
 const selectedMovie = ref<Seance | null>(null);
-
-
 
 async function onEditClick() {
     if (selectedMovieTimesId.value === null) return;
@@ -219,7 +214,14 @@ const fetchMoviesTimes = async () => {
     try {
         const moviesTimesData = await api.getMoviesCinemaId({});
         if (Array.isArray(moviesTimesData)) {
-            seances.value = moviesTimesData;
+            const now = new Date();
+            seances.value = moviesTimesData.filter(seance => {
+                if (!seance.day) return false;
+                const day = new Date(seance.day);
+                const [hours, minutes, seconds] = seance.startTime.split(':');
+                day.setHours(Number(hours), Number(minutes), Number(seconds || 0));
+                return day > now;
+            });
         } else {
             console.error("Erreur : la réponse de l'API n'est pas un tableau");
         }

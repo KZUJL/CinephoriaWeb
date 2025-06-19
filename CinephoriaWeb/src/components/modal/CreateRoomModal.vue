@@ -7,7 +7,6 @@
           <h5 class="modal-title">Ajouter une salle</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
         </div>
-
         <div class="modal-body scrollable-body">
           <form>
             <div class="mb-3">
@@ -36,7 +35,6 @@
               <label class="form-label">Nombre de sièges</label>
               <input type="text" class="form-control" v-model.number="seatCount" min="0" />
             </div>
-
             <div class="mb-3" v-if="room">
               <div style="overflow-x:auto;">
                 <table class="table table-bordered align-middle" style="table-layout: auto;">
@@ -72,17 +70,13 @@
                 </table>
               </div>
             </div>
-            <!-- Ajoute d'autres champs selon le modèle -->
             <div class="modal-footer">
               <button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
               <button class="btn btn-primary" @click="onSave">Enregistrer</button>
             </div>
           </form>
         </div>
-
-
       </div>
-
     </div>
   </div>
 </template>
@@ -125,7 +119,7 @@ watch(seatCount, (newCount) => {
 
   function getSeatName(index: number) {
     const seatsPerRow = 15
-    const row = String.fromCharCode(65 + Math.floor(index / seatsPerRow)) // 65 = 'A'
+    const row = String.fromCharCode(65 + Math.floor(index / seatsPerRow))
     const number = (index % seatsPerRow) + 1
     return `${row}${number}`
   }
@@ -206,7 +200,7 @@ function onSave(e: Event) {
       ...roomDto,
       seats: seatsDto
     });
-    emit('update:modelValue', false); // Ferme la modale
+    emit('update:modelValue', false);
 
   }
 }

@@ -48,7 +48,7 @@
                         <div class="mb-3">
                             <label class="form-label">Heure de fin</label>
                             <input type="time" class="form-control" v-model="newSeance.endTime" step="1" min="00:00:00"
-                                max="23:59:59" />
+                                max="23:59:59" disabled />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Prix</label>
@@ -59,7 +59,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button class="btn btn-primary" @click="onCreate">Créer</button>
+                    <button class="btn btn-primary" @click="onCreate" data-bs-dismiss="modal">Créer</button>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, defineProps, defineEmits, onMounted } from 'vue';
+import { ref, watch, computed, onMounted } from 'vue';
 import type { Film, Cinema, Room, Seance } from '../../models/types';
 import * as bootstrap from 'bootstrap';
 import Modal from 'bootstrap/js/dist/modal';
@@ -112,6 +112,33 @@ watch(() => newSeance.value.cinemaId, async (cinemaId) => {
     }
 });
 
+watch(
+    [() => newSeance.value.movieId, () => newSeance.value.startTime],
+    ([movieId, startTime]) => {
+        if (!movieId || !startTime) return;
+
+        const selectedFilm = props.films.find(f => f.movieId === movieId);
+        if (!selectedFilm || !selectedFilm.duration) return;
+
+        // Récupère la durée en HH:mm:ss → convertit en millisecondes
+        const [h, m, s] = selectedFilm.duration.split(':').map(Number);
+        const durationMs = (h * 3600 + m * 60 + (s || 0)) * 1000;
+
+        // Récupère l'heure de début (HH:mm:ss ou HH:mm)
+        const [sh, sm, ss] = startTime.split(':').map(Number);
+        const startDate = new Date();
+        startDate.setHours(sh, sm, ss || 0, 0);
+
+        // Ajoute la durée
+        const endDate = new Date(startDate.getTime() + durationMs);
+
+        // Formate HH:mm:ss
+        const formatted = endDate.toTimeString().substring(0, 8);
+        newSeance.value.endTime = formatted;
+    }
+);
+
+
 // Formatage de la date pour input type=date
 const formattedDate = computed({
     get() {
@@ -130,13 +157,6 @@ const formattedDate = computed({
     }
 });
 
-// const closeModal = () => {
-//     const modalEl = document.getElementById('createMovieTimesModal');
-//     if (modalEl) {
-//         const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-//         modal.hide();
-//     }
-// };
 
 function onCreate() {
     if (newSeance.value.movieId && newSeance.value.cinemaId && newSeance.value.roomId && newSeance.value.day && newSeance.value.startTime && newSeance.value.endTime && newSeance.value.price !== undefined) {
