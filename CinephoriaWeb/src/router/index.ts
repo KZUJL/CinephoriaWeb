@@ -82,31 +82,30 @@ router.beforeEach((to, _from, next) => {
     localStorage.setItem('previousRoute', to.fullPath);
   }
 
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+
   // Admin route guard
   if (to.meta.requiresAdmin) {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    
     if (user && (user.role?.roleName === 'admin' || user.role?.roleId === 1)) {
-      next();
+      return next();
     } else {
-      next('/login');
+      return next('/login');
     }
-  } else {
-    next();
   }
 
+  // Employee route guard
   if (to.meta.requiresEmployee) {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    
     if (user && (user.role?.roleName === 'employee' || user.role?.roleId === 2)) {
-      next();
+      return next();
     } else {
-      next('/login');
+      return next('/login');
     }
-  } else {
-    next();
   }
+
+  // No special guard, continue
+  return next();
 });
+
 
 
 export default router

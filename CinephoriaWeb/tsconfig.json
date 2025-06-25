@@ -6,7 +6,7 @@
   ],
   "compilerOptions": {
     "composite": true,
-    "types": ["node"]
+    "types": ["node", "vitest"]
   },
   "include": [
     "src/**/*",
