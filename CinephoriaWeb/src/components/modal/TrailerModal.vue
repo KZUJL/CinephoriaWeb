@@ -42,13 +42,14 @@ const embedUrl = ref<string>('');
 const videoPlayer = ref<HTMLVideoElement | null>(null);
 
 // Fonction utilitaire
-const isYoutube = (url: string) => url.includes("youtube.com/embed");
+const isYoutube = (url?: string) => typeof url === 'string' && url.includes("youtube.com/embed");
+
 
 // Watch sur trailerUrl pour générer embedUrl
 watch(
     () => props.trailerUrl,
     (newUrl) => {
-        if (newUrl.includes("youtube.com/watch?v=")) {
+        if (typeof newUrl === 'string' && newUrl.includes("youtube.com/watch?v=")) {
             const videoId = newUrl.split("v=")[1];
             embedUrl.value = `https://www.youtube.com/embed/${videoId}`;
         } else {
