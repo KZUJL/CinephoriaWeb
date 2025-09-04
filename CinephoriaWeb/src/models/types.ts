@@ -69,6 +69,7 @@ export interface Seance {
     };   
     selected: boolean;
     reserved: boolean;
+    status: boolean;
   }
   export interface Reservation {
     seatId: number;

@@ -4,7 +4,7 @@
         <div class="custom_sd_primary p-4 me-1">
             <div class="text-center">
                 <img :src="moviePoster" alt="Poster" class="img-fluid mb-3" style="max-width: 200px;" />
-                <h3>{{ movieTitle }}</h3>
+                <h3 style="word-break: break-word; max-width: 350px; margin: 0 auto;">{{ movieTitle }}</h3>
                 <span>{{ RoomName }}</span>
             </div>
 
@@ -42,13 +42,16 @@
                     <div v-for="(seat, colIndex) in row" :key="seat.locationId"
                         :class="['mx-1', (colIndex === 4 || colIndex === 11) ? 'ms-4' : '']">
                         <button class="btn btn-sm seat" :class="[
-                            seat.type === 'Emplacement PMR'
-                                ? (seat.reserved ? 'btn-primary disabled' : (seat.selected ? 'btn-primary' : 'btn-outline-primary'))
-                                : (seat.reserved ? 'btn-danger' : (seat.selected ? 'btn-success' : 'btn-outline-secondary'))
-                        ]" :disabled="seat.reserved" @click="() => toggleSeatSelection(seat)"
-                            :title="seat.type === 'Emplacement PMR' ? 'Emplacement PMR' : ''">
+                            !seat.status
+                                ? 'btn-secondary disabled opacity-50'
+                                : seat.type === 'Emplacement PMR'
+                                    ? (seat.reserved ? 'btn-primary disabled' : (seat.selected ? 'btn-primary' : 'btn-outline-primary'))
+                                    : (seat.reserved ? 'btn-danger' : (seat.selected ? 'btn-success' : 'btn-outline-secondary'))
+                        ]" :disabled="seat.reserved || !seat.status" @click="() => toggleSeatSelection(seat)"
+                            :title="!seat.status ? 'Siège en réparation' : (seat.type === 'Emplacement PMR' ? 'Emplacement PMR' : '')">
                             {{ seat.name }}
                         </button>
+
                     </div>
                 </div>
             </div>
