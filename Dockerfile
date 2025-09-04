@@ -2,7 +2,7 @@
 FROM node:18 AS build
 WORKDIR /app
 
-# Copier seulement package.json pour cache npm
+# Copier uniquement les fichiers nécessaires pour installer les dépendances
 COPY CinephoriaWeb/package*.json ./
 RUN npm install
 
