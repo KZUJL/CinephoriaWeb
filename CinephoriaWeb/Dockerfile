@@ -1,9 +1,16 @@
 # Étape 1 : build
 FROM node:18 AS build
 WORKDIR /app
-COPY . .
+
+# Copier seulement package.json et package-lock.json pour profiter du cache Docker
+COPY CinephoriaWeb/package*.json ./
+
 RUN npm install
-RUN chmod +x node_modules/.bin/vue-tsc && chmod +x node_modules/.bin/vite && npx vue-tsc -b && npx vite build
+
+# Copier le reste du projet front
+COPY CinephoriaWeb/ .
+
+# Build Vue
 RUN npx vue-tsc -b && npx vite build
 
 # Étape 2 : Nginx pour servir le front
