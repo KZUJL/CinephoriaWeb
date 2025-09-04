@@ -100,7 +100,7 @@ main {
 }
 
 .active-btn {
-  background-color: hsl(235, 49%, 42%) !important;
+  background-color: #373fa0 !important;
   border-color: wheat !important;
   color: white !important;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
@@ -108,7 +108,7 @@ main {
 
 
 .custom-card {
-  background-color: rgb(21, 79, 84) !important;
+  background-color: #154f54 !important;
   border: wheat 1px solid;
   color: white !important;
 }
