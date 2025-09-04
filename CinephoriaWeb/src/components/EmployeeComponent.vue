@@ -1,7 +1,6 @@
 <template>
     <div class="container my-4">
         <!-- <h1 class="mb-4">Menu employé(e)</h1> -->
-
         <div class="btn-group mb-4" role="group" aria-label="Menu administration">
             <button v-for="section in sections" :key="section.id" class="btn custom-btn"
                 :class="{ 'active-btn': currentSection === section.id }" @click="currentSection = section.id">
