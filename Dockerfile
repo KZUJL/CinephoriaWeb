@@ -4,15 +4,15 @@ WORKDIR /app
 
 # Copier uniquement les fichiers nécessaires pour installer les dépendances
 COPY CinephoriaWeb/package*.json ./
-
 RUN npm install
 
-# Copier tout le reste du projet
+# Copier le reste
 COPY CinephoriaWeb/ .
 
-# Lancer le build via le script npm
+# Build (vite build suffit)
 RUN npm run build
 
-# Étape 2 : Nginx pour servir le front
+# Étape 2 : Nginx
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 8080
