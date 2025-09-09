@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for cinephoriaweb-emldfw on 2025-09-04T09:41:45Z
+# fly.toml app configuration file generated for cinephoriaweb-wwhr-w on 2025-09-09T07:13:01Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'cinephoriaweb-emldfw'
-primary_region = 'cdg'
+app = 'cinephoriaweb-wwhr-w'
+primary_region = 'fra'
 
 [build]
 
