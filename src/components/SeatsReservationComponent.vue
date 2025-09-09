@@ -210,16 +210,23 @@ async function fetchSeatsByRoomId(roomId: number) {
 }
 
 
+function formatLocalDateTime(date: Date, hours: number, minutes: number = 0, seconds: number = 0) {
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+}
+
 async function fetchReservedSeats() {
-    // Construction d'un objet Date sans le 'Z' (UTC)
-    const localReservationDate = new Date(`${movieDay.value}T00:00:00`);
-    const localReservationTime = new Date(`${movieDay.value}T${startTime.value}:00`);
+    // movieDay.value est supposé être un string "YYYY-MM-DD"
+    const day = new Date(movieDay.value);
+
+    // startTime.value est supposé être "HH:mm"
+    const [hours, minutes] = startTime.value.split(':').map(Number);
 
     const reservationData = {
         movieId: Number(route.params.movieId),
         cinemaId: Number(route.params.cinemaId),
-        reservationDate: localReservationDate.toISOString(),
-        reservationTime: localReservationTime.toISOString(),
+        reservationDate: formatLocalDateTime(day, 0, 0, 0),   // date uniquement à minuit
+        reservationTime: formatLocalDateTime(day, hours, minutes), // date + heure exacte
     };
 
     const api = new ApiCinephoria();
@@ -240,6 +247,7 @@ async function fetchReservedSeats() {
         console.error("Erreur lors de la récupération des réservations :", error);
     }
 }
+
 
 
 
