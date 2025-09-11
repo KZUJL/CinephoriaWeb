@@ -1,7 +1,8 @@
 <template>
-    <div class="d-flex">
+    <div class="d-flex flex-column flex-md-row">
+
         <!-- Sidebar infos -->
-        <div class="custom_sd_primary p-4 me-1">
+        <div class="custom_sd_primary p-4 me-md-1 mb-3 mb-md-0">
             <div class="text-center">
                 <img :src="moviePoster" alt="Poster" class="img-fluid mb-3" style="max-width: 200px;" />
                 <h3 style="word-break: break-word; max-width: 350px; margin: 0 auto;">{{ movieTitle }}</h3>

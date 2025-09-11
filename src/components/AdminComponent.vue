@@ -1,14 +1,17 @@
 <template>
     <div class="container my-4">
-        <h1 class="mb-4">Administration</h1>
+        <h1 class="mb-4 text-white">Administration</h1>
 
-        <div class="btn-group mb-4" role="group" aria-label="Menu administration">
-            <button v-for="section in sections" :key="section.id" class="btn custom-btn"
+        <!-- Menu administration -->
+        <div class="btn-group mb-4 flex-wrap d-flex justify-content-start" role="group"
+            aria-label="Menu administration">
+            <button v-for="section in sections" :key="section.id" class="btn custom-btn mb-2 me-2"
                 :class="{ 'active-btn': currentSection === section.id }" @click="currentSection = section.id">
                 {{ section.label }}
             </button>
         </div>
 
+        <!-- Sections -->
         <MovieManagement v-if="currentSection === 'films'" />
         <ShowTimesManagement v-if="currentSection === 'seances'" />
         <RoomManagement v-if="currentSection === 'salles'" />
