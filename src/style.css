@@ -293,6 +293,26 @@ ul li a {
   border-radius: 6px;
 }
 
+/* Conteneur scrollable uniquement pour les sièges */
+.seats-zone {
+  overflow-x: auto;
+  /* active le scroll horizontal */
+  overflow-y: hidden;
+  /* évite un scroll vertical inutile */
+  max-width: 100%;
+  /* pas plus large que l'écran */
+  -webkit-overflow-scrolling: touch;
+  text-align: center;
+}
+
+.seats-zone>.d-flex {
+  flex-wrap: nowrap;
+  min-width: max-content;
+  margin: 0 auto;
+  /* <-- centre la rangée dans le conteneur */
+  justify-content: center;
+}
+
 .screen {
   width: 50%;
   height: 10px;
@@ -478,5 +498,61 @@ ul li a {
     font-size: 0.85rem;
     /* texte plus petit */
     padding: 0.5em 0.75em;
+  }
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 6px;
+  text-align: left;
+  word-wrap: break-word;
+  white-space: normal;
+  /* permet le retour à la ligne */
+}
+
+/* Version mobile */
+@media (max-width: 768px) {
+  .table thead {
+    display: none;
+    /* on cache l’entête */
+  }
+
+  .table,
+  .table tbody,
+  .table tr,
+  .table td {
+    display: block;
+    width: 100%;
+  }
+
+  .table tr {
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 6px;
+    background: #222;
+    /* couleur de fond si besoin */
+  }
+
+  .table td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    /* injecte le nom de la colonne */
+    position: absolute;
+    left: 10px;
+    width: 45%;
+    white-space: nowrap;
+    font-weight: bold;
+    text-align: left;
   }
 }

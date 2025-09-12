@@ -20,9 +20,9 @@
             <table v-if="seances.length" class="table ">
                 <thead>
                     <tr>
-                        <th>Cinema</th>
+                        <th>Cinéma</th>
                         <th>Film</th>
-                        <th>jour</th>
+                        <th>Jour</th>
                         <th>Heure</th>
                         <th>Salle</th>
                         <th>Action(s)</th>
@@ -33,12 +33,12 @@
                         @click="selectMovie(seance.movieTimesId)"
                         :class="{ 'table-active': selectedMovieTimesId === seance.movieTimesId }"
                         style="cursor: pointer;">
-                        <td>{{ getCinemasTitle(seance.cinemaId) }}</td>
-                        <td>{{ getMovieTitle(seance.movieId) }}</td>
-                        <td>{{ seance.day ? formatDate(seance.day) : '' }}</td>
-                        <td>{{ seance.startTime }}</td>
-                        <td>{{ seance.room.name }}</td>
-                        <td v-if="selectedMovieTimesId === seance.movieTimesId">
+                        <td data-label="Cinéma">{{ getCinemasTitle(seance.cinemaId) }}</td>
+                        <td data-label="Film">{{ getMovieTitle(seance.movieId) }}</td>
+                        <td data-label="Jour">{{ seance.day ? formatDate(seance.day) : '' }}</td>
+                        <td data-label="Heure">{{ seance.startTime }}</td>
+                        <td data-label="Salle">{{ seance.room.name }}</td>
+                        <td data-label="Action(s)" v-if="selectedMovieTimesId === seance.movieTimesId">
                             <button class="btn btn-primary btn-sm me-2" @click="onEditClick">
                                 Modifier
                             </button>

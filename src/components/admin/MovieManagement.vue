@@ -21,11 +21,11 @@
                 <tbody>
                     <tr v-for="movie in movies" :key="movie.movieId" @click="selectMovie(movie.movieId)"
                         :class="{ 'table-active': selectedMovieId === movie.movieId }" style="cursor: pointer;">
-                        <td>{{ movie.title }}</td>
-                        <td>{{ movie.genre }}</td>
-                        <td>{{ movie.duration }}</td>
-                        <td>{{ formatDate(movie.availableDate) }}</td>
-                        <td v-if="selectedMovieId === movie.movieId">
+                        <td data-label="Titre">{{ movie.title }}</td>
+                        <td data-label="Genre">{{ movie.genre }}</td>
+                        <td data-label="Durée">{{ movie.duration }}</td>
+                        <td data-label="Date de sortie">{{ formatDate(movie.availableDate) }}</td>
+                        <td data-label="Action(s)" v-if="selectedMovieId === movie.movieId">
                             <button class="btn btn-primary btn-sm me-2" @click="onEditClick">
                                 Modifier
                             </button>

@@ -32,27 +32,29 @@
         </div>
 
         <!-- Sièges -->
-        <div class="flex-grow-1 seats-zone">
-            <div class="d-flex flex-column align-items-center p-2">
-                <div class="text-center mb-4">
-                    <h2>Réservation des sièges</h2>
-                </div>
-                <div class="screen mb-4"></div>
+        <div class="flex-grow-1 d-flex flex-column align-items-center">
+            <div class="text-center mb-4">
+                <h2>Réservation des sièges</h2>
+            </div>
+            <div class="seats-zone">
+                <div class="d-flex flex-column align-items-center p-2">
 
-                <div v-for="(row, rowIndex) in seatRows" :key="rowIndex" class="d-flex mb-2">
-                    <div v-for="(seat, colIndex) in row" :key="seat.locationId"
-                        :class="['mx-1', (colIndex === 4 || colIndex === 11) ? 'ms-4' : '']">
-                        <button class="btn btn-sm seat" :class="[
-                            !seat.status
-                                ? 'btn-secondary disabled opacity-50'
-                                : seat.type === 'Emplacement PMR'
-                                    ? (seat.reserved ? 'btn-primary disabled' : (seat.selected ? 'btn-primary' : 'btn-outline-primary'))
-                                    : (seat.reserved ? 'btn-danger' : (seat.selected ? 'btn-success' : 'btn-outline-secondary'))
-                        ]" :disabled="seat.reserved || !seat.status" @click="() => toggleSeatSelection(seat)"
-                            :title="!seat.status ? 'Siège en réparation' : (seat.type === 'Emplacement PMR' ? 'Emplacement PMR' : '')">
-                            {{ seat.name }}
-                        </button>
+                    <div class="screen mb-4"></div>
 
+                    <div v-for="(row, rowIndex) in seatRows" :key="rowIndex" class="d-flex mb-2">
+                        <div v-for="(seat, colIndex) in row" :key="seat.locationId"
+                            :class="['mx-1', (colIndex === 4 || colIndex === 11) ? 'ms-4' : '']">
+                            <button class="btn btn-sm seat" :class="[
+                                !seat.status
+                                    ? 'btn-secondary disabled opacity-50'
+                                    : seat.type === 'Emplacement PMR'
+                                        ? (seat.reserved ? 'btn-primary disabled' : (seat.selected ? 'btn-primary' : 'btn-outline-primary'))
+                                        : (seat.reserved ? 'btn-danger' : (seat.selected ? 'btn-success' : 'btn-outline-secondary'))
+                            ]" :disabled="seat.reserved || !seat.status" @click="() => toggleSeatSelection(seat)"
+                                :title="!seat.status ? 'Siège en réparation' : (seat.type === 'Emplacement PMR' ? 'Emplacement PMR' : '')">
+                                {{ seat.name }}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

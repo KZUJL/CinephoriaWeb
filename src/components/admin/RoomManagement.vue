@@ -10,7 +10,7 @@
             <thead>
                 <tr>
                     <th>Cinema</th>
-                    <th>Name</th>
+                    <th>Nom</th>
                     <th>Nbre</th>
                     <th>Action(s)</th>
                 </tr>
@@ -18,10 +18,10 @@
             <tbody>
                 <tr v-for="room in rooms" :key="room.roomId" @click="selectMovie(room.roomId)"
                     :class="{ 'table-active': selectedMovieId === room.roomId }" style="cursor: pointer;">
-                    <td>{{ room.cinema.name }}</td>
-                    <td>{{ room.name }}</td>
-                    <td>{{ room.seatsNumber }}</td>
-                    <td v-if="selectedMovieId === room.roomId">
+                    <td data-label="Cinéma">{{ room.cinema.name }}</td>
+                    <td data-label="Nom">{{ room.name }}</td>
+                    <td data-label="Nbre">{{ room.seatsNumber }}</td>
+                    <td data-label="Action(s)" v-if="selectedMovieId === room.roomId">
                         <button class="btn btn-primary btn-sm me-2" @click="onEditRoomClick">
                             Modifier
                         </button>
