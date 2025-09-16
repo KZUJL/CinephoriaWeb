@@ -1,54 +1,53 @@
-# CinephoriaWeb
+# 🎬 Cinephoria Front-end (Vue.js + Vite)
 
-Bienvenue sur le projet **CinephoriaWeb** !
+Cinephoria Front-end est l’interface utilisateur web de la plateforme Cinephoria.  
+Elle permet aux utilisateurs de consulter les films, gérer les réservations et accéder aux informations liées aux utilisateurs et employés.  
 
-## Description
+---
 
-CinephoriaWeb est une application web dédiée aux passionnés de cinéma. Elle permet aux utilisateurs de découvrir, partager et discuter des films.
+## 🚀 Prérequis
 
-## Fonctionnalités
+- [Node.js](https://nodejs.org/) (version 18+ recommandée)  
+- [npm](https://www.npmjs.com/) ou [yarn](https://yarnpkg.com/)  
+- Cinephoria Back-end en local ou accessible en ligne  
 
-- Recherche de films
-- Détails des films (synopsis, casting, etc.)
-- Avis et notes des utilisateurs
-- Création de listes de films
-- Discussions et commentaires
+---
 
-## Installation
+## 📂 Installation
 
-Pour installer et exécuter ce projet localement, suivez ces étapes :
+### Cloner le dépôt
 
-1. Clonez le dépôt :
-   ```bash
-   git clone https://github.com/votre-utilisateur/CinephoriaWeb.git
-   ```
-2. Accédez au répertoire du projet :
-   ```bash
-   cd CinephoriaWeb
-   ```
-3. Installez les dépendances :
-   ```bash
-   npm install
-   ```
-4. Démarrez l'application :
-   ```bash
-   npm start
-   ```
+```bash
+git clone https://github.com/KZUJL/CinephoriaWeb.git
+cd CinephoriaWeb
 
-## Contribuer
+### Installer les dépendances
 
-Les contributions sont les bienvenues ! Pour contribuer :
+npm install
 
-1. Forkez le projet
-2. Créez une branche pour votre fonctionnalité (`git checkout -b feature/AmazingFeature`)
-3. Commitez vos modifications (`git commit -m 'Add some AmazingFeature'`)
-4. Poussez votre branche (`git push origin feature/AmazingFeature`)
-5. Ouvrez une Pull Request
+### Configuration de l’API
 
-## Licence
+Le front communique avec le back via l’URL définie dans le fichier .env.
 
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+Créer un fichier .env à la racine du projet (si non présent) :
+# URL du back-end
+VITE_API_URL=https://apicinephoria-bf9xgq.fly.dev
+⚠️ Pour utiliser le back local, changer l’URL pour pointer vers votre instance locale du back :
+VITE_API_URL=https://localhost:7121
 
-## Contact
+### Lancer le front en développement
 
-Pour toute question ou suggestion, veuillez contacter [votre-email@example.com](mailto:votre-email@example.com).
+npm run dev
+Puis ouvrir le navigateur à l’adresse indiquée (ex : http://localhost:5173)
+
+### Tests unitaires
+
+npm run test:unit
+
+# Autres dépôts du projet Cinephoria
+
+- [Cinephoria Front-end (Vue.js)](https://github.com/KZUJL/CinephoriaWeb)
+- [Cinephoria Back-end (C# .NET)](https://github.com/ton-org/CinephoriaApi)
+- [Cinephoria Mobile (Flutter)](https://github.com/KZUJL/CinephoriaMobileApp)
+- [Cinephoria Desktop (C#)](https://github.com/KZUJL/CinephoriaDesktop)
+
