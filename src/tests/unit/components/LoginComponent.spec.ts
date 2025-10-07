@@ -2,17 +2,20 @@ import { mount, flushPromises } from '@vue/test-utils';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import LoginComponent from '../../../components/LoginComponent.vue';
 import { useRouter } from 'vue-router';
-
+import type { Mock } from 'vitest';
 // Mock du router
 vi.mock('vue-router', () => ({
   useRouter: vi.fn(),
 }));
-
+interface ApiCinephoriaMock {
+  postLogin: Mock;
+  postSendResetPassword: Mock;
+}
 // Mock de l'API Cinephoria
 const mockLoginResponse = {
   userId: 1,
   email: 'test@example.com',
-  mustChangePassword: false,
+  mustChangePassword: true,
 };
 
 vi.mock('../../../services/apiCinephoria', () => {
@@ -76,7 +79,7 @@ describe('LoginComponent.vue', () => {
     await flushPromises();
 
     expect(localStorage.getItem('user')).toContain('test@example.com');
-    expect(pushMock).toHaveBeenCalledWith('/');
+    expect(pushMock).toHaveBeenCalledWith('/change-password');
   });
 
 it('redirige vers la page de changement de mot de passe si mustChangePassword = true', async () => {
@@ -105,21 +108,25 @@ it('redirige vers la page de changement de mot de passe si mustChangePassword = 
 
 
 
- it('affiche une erreur si le login échoue', async () => {
-  const api = (await import('../../../services/apiCinephoria')).default;
-  api.prototype.postLogin = vi.fn(() => Promise.reject(new Error('login failed')));
+it('affiche une erreur si le login échoue', async () => {
+  const apiModule = await import('../../../services/apiCinephoria');
+  const mockApi: ApiCinephoriaMock = {
+    postLogin: vi.fn(() => Promise.reject(new Error('login failed'))),
+    postSendResetPassword: vi.fn(),
+  };
+
+  (apiModule.default as unknown as Mock).mockImplementation(() => mockApi);
 
   const wrapper = mount(LoginComponent);
 
   await wrapper.find('#email').setValue('wrong@example.com');
   await wrapper.find('#password').setValue('wrongpassword');
-
   await wrapper.find('form').trigger('submit.prevent');
-  await flushPromises();  // attendre que la promesse rejetée soit prise en compte 
 
-  await wrapper.vm.$nextTick(); // attendre un tick Vue si besoin
+  await flushPromises();
 
   expect(wrapper.text()).toContain('Identifiants incorrects ou erreur serveur.');
 });
+
 
 });

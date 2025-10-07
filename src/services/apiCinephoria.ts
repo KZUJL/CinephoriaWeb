@@ -73,9 +73,14 @@ export default class ApiCinephoria {
      * @throws {Error} Lance une erreur si la requête échoue.
      */
     private postMovie(endpoint: string, data: object) {
-        console.log(`Posting movie to ${this.API_URL}${endpoint}`, data);
+        const token = JSON.parse(localStorage.getItem('loginToken') || "");
         return axios
-            .post(`${this.API_URL}${endpoint}`, data)
+            .post(`${this.API_URL}${endpoint}`, data,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
             .then((response) => {
                 console.log(`${endpoint} API POST response:`, response.data);
                 return response.data;  // Résoudre la promesse avec les données reçues
@@ -94,8 +99,6 @@ export default class ApiCinephoria {
     createMovie(movie: object) {
         return this.postMovie('/api/Movies', movie);
     }
-
-
 
     private deleteMovie(endpoint: string) {
         console.log(`Deleting movie at ${this.API_URL}${endpoint}`);
@@ -441,6 +444,10 @@ export default class ApiCinephoria {
             .post(`${this.API_URL}/api/Login/authenticate`, params)
             .then((response) => {
                 console.log(`${endpoint} API response:`, response.data);
+                console.log('token', response.data.token)
+
+                localStorage.setItem('loginToken', JSON.stringify(response.data.token));
+
                 return response.data;
             })
             .catch((error) => {
@@ -510,8 +517,18 @@ export default class ApiCinephoria {
      * @returns {Promise<any>} - La réponse de l'API après la mise à jour.
      */
     putPasswordAccount(data: { email: string; newPassword: string }) {
+        const token = JSON.parse(localStorage.getItem('loginToken') || "");
+
         return axios
-            .put(`${this.API_URL}/api/Login/update-password`, data)
+            .put(
+                `${this.API_URL}/api/Login/update-password`,
+                data,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
             .then((response) => {
                 console.log('Mot de passe mis à jour avec succès :', response.data)
                 return response.data

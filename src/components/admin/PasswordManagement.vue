@@ -58,6 +58,7 @@ const handleRegister = async () => {
             email: email.value,
             newPassword: password.value
         });
+
         console.log('Mot de passe mis à jour :', response);
         // Vide les champs du formulaire    
         email.value = '';

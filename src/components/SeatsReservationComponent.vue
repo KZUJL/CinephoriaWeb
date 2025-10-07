@@ -37,7 +37,7 @@
                 <h2>Réservation des sièges</h2>
             </div>
             <div class="seats-zone">
-                <div class="d-flex flex-column align-items-center p-2">
+                <div class="d-flex flex-column align-items-center p-2">np
 
                     <div class="screen mb-4"></div>
 
