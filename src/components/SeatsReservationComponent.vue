@@ -31,13 +31,15 @@
             </div>
         </div>
 
+
+
         <!-- Sièges -->
         <div class="flex-grow-1 d-flex flex-column align-items-center">
             <div class="text-center mb-4">
                 <h2>Réservation des sièges</h2>
             </div>
             <div class="seats-zone">
-                <div class="d-flex flex-column align-items-center p-2">np
+                <div class="d-flex flex-column align-items-center p-2">
 
                     <div class="screen mb-4"></div>
 
@@ -73,6 +75,29 @@
                     </div>
 
                 </div>
+            </div>
+        </div>
+        <!-- Légende -->
+        <div class="d-flex flex-column justify-content-center mt-4">
+            <div class="d-flex align-items-center me-4 mb-2">
+                <button class="btn btn-sm seat btn-outline-secondary me-2" disabled></button>
+                <span>Siège disponible</span>
+            </div>
+            <div class="d-flex align-items-center me-4 mb-2">
+                <button class="btn btn-sm seat btn-outline-primary me-2" disabled></button>
+                <span>Emplacement PMR</span>
+            </div>
+            <div class="d-flex align-items-center me-4 mb-2">
+                <button class="btn btn-sm seat btn-success me-2" disabled></button>
+                <span>Siège sélectionné</span>
+            </div>
+            <div class="d-flex align-items-center me-4 mb-2">
+                <button class="btn btn-sm seat btn-danger me-2" disabled></button>
+                <span>Siège réservé</span>
+            </div>
+            <div class="d-flex align-items-center me-4 mb-2">
+                <button class="btn btn-sm seat btn-secondary disabled opacity-50 me-2"></button>
+                <span>Non disponible</span>
             </div>
         </div>
     </div>
