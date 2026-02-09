@@ -195,17 +195,27 @@ export default class ApiCinephoria {
      * @returns {Promise<any>} Une promesse résolue avec la réponse du serveur.
      */
     postMovieTimes(movieTimesData: object) {
+        const token = JSON.parse(localStorage.getItem('loginToken') || "");
+
         console.log(`Posting movie times to ${this.API_URL}/api/MovieTimes`, movieTimesData);
-        return axios
-            .post(`${this.API_URL}/api/MovieTimes`, movieTimesData)
-            .then((response) => {
-                console.log(`/api/MovieTimes API POST response:`, response.data);
-                return response.data;
-            })
-            .catch((error) => {
-                console.error(`Error posting movie times to /api/MovieTimes:`, error);
-                throw error;
-            });
+
+        return axios.post(
+            `${this.API_URL}/api/MovieTimes`,
+            movieTimesData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        )
+        .then((response) => {
+            console.log(`/api/MovieTimes API POST response:`, response.data);
+            return response.data;
+        })
+        .catch((error) => {
+            console.error(`Error posting movie times to /api/MovieTimes:`, error);
+            throw error;
+        });
     }
 
  /**
